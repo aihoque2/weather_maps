@@ -3,6 +3,10 @@ DataProducer.py
 
 collect the weather data from api requests and
 publish the kafka topic
+
+request from:
+https://www.weatherapi.com/unverified.aspx?tagid=01202408235201010823
+
 """
 
 import requests
@@ -21,7 +25,13 @@ class DataProducer:
     def get_current_data(self, cities):
         """
         collect the weather json from
-        requests API then send it to
-        the kafka topic
+        requests API then process it to
+        be published on a Kafka topic.
+        """
+        pass
+
+    def publish_data(self, data):
+        """
+        given the json format, publish the type of data
         """
         pass
