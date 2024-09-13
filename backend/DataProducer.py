@@ -14,6 +14,9 @@ from confluent_kafka import Proudcer
 import json
 
 class DataProducer:
+    """
+    TODO: turn this into an ABC?
+    """
     def __init__(self):
         self.api_key = ''
         self.config = {}
@@ -21,12 +24,27 @@ class DataProducer:
 
         self.producer = Producer()
 
+    def get_data_from_city(self, city):
+        """
+        weather data from one part of the city
+        just use requests and do a call
+        """
+        pass
 
     def get_current_data(self, cities):
         """
         collect the weather json from
         requests API then process it to
         be published on a Kafka topic.
+        
+        first guy to do
+        """
+        pass
+
+    def producer_cb(self, err, msg):
+        """
+        producer callback f'n for when the
+        topic is set up
         """
         pass
 

@@ -9,3 +9,11 @@ storing data in elasticsearch:
 https://kitwaicloud.github.io/elk/weather.html
 
 """
+
+class DataConsumer:
+    """
+    subscribe to a data topic and collect the 
+    data and upload it to an ElasticSearch database
+    """
+    def __init__(self):
+        pass
