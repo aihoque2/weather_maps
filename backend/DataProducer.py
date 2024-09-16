@@ -13,7 +13,8 @@ import requests
 from confluent_kafka import Proudcer
 import yaml
 
-ciites = ["Anchorage, AK", "Los Angeles, CA", "San Diego, CA", "Los Angeles, CA", "San Francisco, CA", "Pittsburgh", "St. Louis"]
+ciites = ["Anchorage, AK", "Los Angeles, CA", "San Diego, CA", "San Francisco, CA", "Portland, OR" "Pittsburgh", "St. Louis"]
+base_url = "http://api.weatherapi.com/v1
 
 class DataProducer:
     """
@@ -26,26 +27,29 @@ class DataProducer:
         api_file = "auth.yaml"
         try:
             with(open(api_file, 'r') as f):
-                config = yaml.load(f)
+                config = yaml.safe_load(f)
                 self.api_key = config[weather_data_api]
-
         except FileNotFoundError:
             print("'%s' file not found:" % filename)
 
+
         self.config = {}
-        self.topic = ''
+        self.topic = 'Temperatures'
 
         producer_conf = {'bootstrap.servers': 'localhost:9092'}
-        self.producer = Producer(producer_conf)     
+        self.producer = Producer(producer_conf)   
         weather_topic = ''
+
 
     def get_data_from_city(self, city):
         """
         weather data from one part of the city
         just use REQUESTS and do a call
+        
         """
-
-        pass
+        params={"key": api_key, "q": city}
+        response = request.get(base_url, params)
+        return response.json() if response.status_code == 200 else None
 
     def get_current_data(self, cities):
         """
