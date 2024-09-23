@@ -10,11 +10,17 @@ https://www.weatherapi.com/unverified.aspx?tagid=01202408235201010823
 """
 
 import requests
-from confluent_kafka import Proudcer
+from confluent_kafka import Producer
 import yaml
 
-ciites = ["Anchorage, AK", "Los Angeles, CA", "San Diego, CA", "San Francisco, CA", "Portland, OR" "Pittsburgh", "St. Louis"]
-base_url = "http://api.weatherapi.com/v1
+cites = {}
+try:
+    with(open('cities.yaml', 'r') as f):
+        cities = yaml.safe_load(f) 
+except FileNotFoundError:
+    raise RuntimeError("could not find cities.yaml")
+
+base_url = "http://api.weatherapi.com/v1/current.json"
 
 class DataProducer:
     """
@@ -23,15 +29,14 @@ class DataProducer:
     """
     def __init__(self):
         self.api_key = ''
-        # I don't want to expose the api key file
+        # best practices
         api_file = "auth.yaml"
         try:
             with(open(api_file, 'r') as f):
                 config = yaml.safe_load(f)
-                self.api_key = config[weather_data_api]
+                self.api_key = config['weather_data_api']
         except FileNotFoundError:
             print("'%s' file not found:" % filename)
-
 
         self.config = {}
         self.topic = 'Temperatures'
@@ -41,14 +46,16 @@ class DataProducer:
         weather_topic = ''
 
 
-    def get_data_from_city(self, city):
+    def get_data_from_city(self, city: str):
         """
         weather data from one part of the city
         just use REQUESTS and do a call
         
         """
-        params={"key": api_key, "q": city}
-        response = request.get(base_url, params)
+        params={"key": self.api_key, "q": city}
+        response = requests.get(base_url, params)
+        print("here's the url: ", response.request.url)
+        
         return response.json() if response.status_code == 200 else None
 
     def get_current_data(self, cities):
@@ -73,3 +80,10 @@ class DataProducer:
         given the json format, publish the type of data
         """
         pass
+
+if __name__ == "__main__":
+    # TODO: unit test this
+    producer = DataProducer()
+    response = producer.get_data_from_city("Pittsburgh, PA")
+    print("DataProducer.py response from get_data_from_city(): ", response)
+    assert(isinstance(response, dict))
