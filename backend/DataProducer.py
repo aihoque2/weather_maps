@@ -13,15 +13,6 @@ import requests
 from confluent_kafka import Producer
 import yaml
 
-cites = {}
-try:
-    with(open('cities.yaml', 'r') as f):
-        cities = yaml.safe_load(f) 
-except FileNotFoundError:
-    raise RuntimeError("could not find cities.yaml")
-
-base_url = "http://api.weatherapi.com/v1/current.json"
-
 class DataProducer:
     """
     TODO: turn this into an ABC?
@@ -38,12 +29,27 @@ class DataProducer:
         except FileNotFoundError:
             print("'%s' file not found:" % filename)
 
-        self.config = {}
-        self.topic = 'Temperatures'
+        USA_Major_Cities = {}
+        try:
+            with(open('cities.yaml', 'r') as f):
+                USA_Major_Cities = yaml.safe_load(f) 
+        except FileNotFoundError:
+            raise RuntimeError("could not find cities.yaml")
+        
+        self.states = USA_Major_Cities['USA_Major_Cities']
 
-        producer_conf = {'bootstrap.servers': 'localhost:9092'}
+
+        self.base_url = "http://api.weatherapi.com/v1/current.json"
+
+        self.config = {}
+        self.topic = 'Temperature'
+    
+
+        producer_conf = {
+            'bootstrap.servers': 'localhost:9092',
+
+        }
         self.producer = Producer(producer_conf)   
-        weather_topic = ''
 
 
     def get_data_from_city(self, city: str):
@@ -53,37 +59,40 @@ class DataProducer:
         
         """
         params={"key": self.api_key, "q": city}
-        response = requests.get(base_url, params)
+        response = requests.get(self.base_url, params)
         print("here's the url: ", response.request.url)
         
         return response.json() if response.status_code == 200 else None
+    
+    def producer_cb(self, err, msg):
+        if err is not None:
+            print('Message delivery failed: {}'.format(err))
+        else:
+            print('Message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
 
-    def get_current_data(self, cities):
+
+    def produce_current_data(self):
         """
         collect the weather json from
         requests API then process it to
         be published on a Kafka topic.
-        
-        first guy to do
         """
-        pass
+        for state in self.states.keys():
+            for city in self.states[state]:
+                try:
+                    data = self.get_data_from_city(city)
+                    to_pub = f'{city}:'+ str(data['current']['temp_f'])
+                    print("here's to_pub: ", to_pub)
+                    self.producer.produce(self.topic, value=to_pub, callback=self.producer_cb)
+                    self.producer.flush()
+                    
+                except Exception as e:
+                    print(f"produce_current_data() failed: {e}")
 
-    def producer_cb(self, err, msg):
-        """
-        producer callback f'n for when the
-        topic is set up
-        """
-        pass
-
-    def publish_data(self, data):
-        """
-        given the json format, publish the type of data
-        """
-        pass
 
 if __name__ == "__main__":
     # TODO: unit test this
-    producer = DataProducer()
-    response = producer.get_data_from_city("Pittsburgh, PA")
+    test_producer = DataProducer()
+    response = test_producer.get_data_from_city("Pittsburgh, PA")
     print("DataProducer.py response from get_data_from_city(): ", response)
-    assert(isinstance(response, dict))
+    test_producer.produce_current_data()
