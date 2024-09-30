@@ -37,6 +37,7 @@ class DataProducer:
             raise RuntimeError("could not find cities.yaml")
         
         self.states = USA_Major_Cities['USA_Major_Cities']
+        print("here's self.states: ", self.states)
 
 
         self.base_url = "http://api.weatherapi.com/v1/current.json"
@@ -47,7 +48,6 @@ class DataProducer:
 
         producer_conf = {
             'bootstrap.servers': 'localhost:9092',
-
         }
         self.producer = Producer(producer_conf)   
 
@@ -81,10 +81,13 @@ class DataProducer:
             for city in self.states[state]:
                 try:
                     data = self.get_data_from_city(city)
-                    to_pub = f'{city}:'+ str(data['current']['temp_f'])
-                    print("here's to_pub: ", to_pub)
-                    self.producer.produce(self.topic, value=to_pub, callback=self.producer_cb)
-                    self.producer.flush()
+                    if data is not None:
+                        to_pub = f'{city}:'+ str(data['current']['temp_f'])
+                        print("here's to_pub: ", to_pub)
+                        self.producer.produce(self.topic, value=to_pub, callback=self.producer_cb)
+                        self.producer.flush()
+                    else:
+                        print("produce_current_data() variable 'data' recieved none from the request")
                     
                 except Exception as e:
                     print(f"produce_current_data() failed: {e}")
