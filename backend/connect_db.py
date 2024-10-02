@@ -1,6 +1,10 @@
 import os
 from elasticsearch import Elasticsearch
 
+"""
+script to set up database
+"""
+
 username = 'elastic'
 password = os.getenv('ELASTIC_PASSWORD') # Value you set in the environment variable
 

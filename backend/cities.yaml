@@ -1,206 +1,206 @@
 # cities organized by state
 USA_Major_Cities:
   Alabama:
-    - Birmingham
-    - Montgomery
-    - Mobile
+    - Birmingham, AL
+    - Montgomery, AL
+    - Mobile, AL
   Alaska:
-    - Anchorage
-    - Fairbanks
-    - Juneau
+    - Anchorage, AK
+    - Fairbanks, AK
+    - Juneau, AK
   Arizona:
-    - Phoenix
-    - Tucson
-    - Mesa
+    - Phoenix, AZ
+    - Tucson, AZ
+    - Mesa, AZ
   Arkansas:
-    - Little Rock
-    - Fort Smith
-    - Fayetteville
+    - Little Rock, AR
+    - Fort Smith, AR
+    - Fayetteville, AR
   California:
-    - Los Angeles
-    - San Francisco
-    - San Diego
-    - Sacramento
+    - Los Angeles, CA
+    - San Francisco, CA
+    - San Diego, CA
+    - Sacramento, CA
   Colorado:
-    - Denver
-    - Colorado Springs
-    - Aurora
+    - Denver, CO
+    - Colorado Springs, CO
+    - Aurora, CO
   Connecticut:
-    - Bridgeport
-    - New Haven
-    - Hartford
+    - Bridgeport, CT
+    - New Haven, CT
+    - Hartford, CT
   Delaware:
-    - Wilmington
-    - Dover
-    - Newark
+    - Wilmington, DE
+    - Dover, DE
+    - Newark, DE
   Florida:
-    - Miami
-    - Orlando
-    - Tampa
-    - Jacksonville
+    - Miami, FL
+    - Orlando, FL
+    - Tampa, FL
+    - Jacksonville, FL
   Georgia:
-    - Atlanta
-    - Savannah
-    - Augusta
+    - Atlanta, GA
+    - Savannah, GA
+    - Augusta, GA
   Hawaii:
-    - Honolulu
-    - Hilo
-    - Kailua
+    - Honolulu, HI
+    - Hilo, HI
+    - Kailua, HI
   Idaho:
-    - Boise
-    - Nampa
-    - Idaho Falls
+    - Boise, ID
+    - Nampa, ID
+    - Idaho Falls, ID
   Illinois:
-    - Chicago
-    - Springfield
-    - Rockford
+    - Chicago, IL
+    - Springfield, IL
+    - Rockford, IL
   Indiana:
-    - Indianapolis
-    - Fort Wayne
-    - Evansville
+    - Indianapolis, IN
+    - Fort Wayne, IN
+    - Evansville, IN
   Iowa:
-    - Des Moines
-    - Cedar Rapids
-    - Davenport
+    - Des Moines, IA
+    - Cedar Rapids, IA
+    - Davenport, IA
   Kansas:
-    - Wichita
-    - Overland Park
-    - Topeka
+    - Wichita, KS
+    - Overland Park, KS
+    - Topeka, KS
   Kentucky:
-    - Louisville
-    - Lexington
-    - Bowling Green
+    - Louisville, KY
+    - Lexington, KY
+    - Bowling Green, KY
   Louisiana:
-    - New Orleans
-    - Baton Rouge
-    - Shreveport
+    - New Orleans, LA
+    - Baton Rouge, LA
+    - Shreveport, LA
   Maine:
-    - Portland
-    - Bangor
-    - Augusta
+    - Portland, ME
+    - Bangor, ME
+    - Augusta, ME
   Maryland:
-    - Baltimore
-    - Annapolis
-    - Frederick
+    - Baltimore, MD
+    - Annapolis, MD
+    - Frederick, MD
   Massachusetts:
-    - Boston
-    - Worcester
-    - Springfield
+    - Boston, MA
+    - Worcester, MA
+    - Springfield, MA
   Michigan:
-    - Detroit
-    - Grand Rapids
-    - Lansing
+    - Detroit, MI
+    - Grand Rapids, MI
+    - Lansing, MI
   Minnesota:
-    - Minneapolis
-    - Saint Paul
-    - Rochester
+    - Minneapolis, MN
+    - Saint Paul, MN
+    - Rochester, MN
   Mississippi:
-    - Jackson
-    - Gulfport
-    - Hattiesburg
+    - Jackson, MS
+    - Gulfport, MS
+    - Hattiesburg, MS
   Missouri:
-    - Kansas City
-    - Saint Louis
-    - Springfield
+    - Kansas City, MO
+    - Saint Louis, MO
+    - Springfield, MO
   Montana:
-    - Billings
-    - Missoula
-    - Great Falls
+    - Billings, MO
+    - Missoula, MO
+    - Great Falls, MO
   Nebraska:
-    - Omaha
-    - Lincoln
-    - Bellevue
+    - Omaha, NE
+    - Lincoln, NE
+    - Bellevue, NE
   Nevada:
-    - Las Vegas
-    - Reno
-    - Henderson
+    - Las Vegas, NV
+    - Reno, NV
+    - Henderson, NV
   New Hampshire:
-    - Manchester
-    - Nashua
-    - Concord
+    - Manchester, NH
+    - Nashua, NH
+    - Concord, NH
   New Jersey:
-    - Newark
-    - Jersey City
-    - Paterson
+    - Newark, NJ
+    - Jersey City, NJ
+    - Paterson, NJ
   New Mexico:
-    - Albuquerque
-    - Santa Fe
-    - Las Cruces
+    - Albuquerque, NM
+    - Santa Fe, NM
+    - Las Cruces, NM
   New York:
-    - New York City
-    - Buffalo
-    - Rochester
-    - Syracuse
+    - New York City, NY
+    - Buffalo, NY
+    - Rochester, NY
+    - Syracuse, NY
   North Carolina:
-    - Charlotte
-    - Raleigh
-    - Greensboro
+    - Charlotte, NC
+    - Raleigh, NC
+    - Greensboro, NC
   North Dakota:
-    - Fargo
-    - Bismarck
-    - Grand Forks
+    - Fargo, ND
+    - Bismarck, ND
+    - Grand Forks, ND
   Ohio:
-    - Cleveland
-    - Columbus
-    - Cincinnati
+    - Cleveland, OH
+    - Columbus, OH
+    - Cincinnati, OH
   Oklahoma:
-    - Oklahoma City
-    - Tulsa
-    - Norman
+    - Oklahoma City, OK
+    - Tulsa, OK
+    - Norman, OK
   Oregon:
-    - Portland
-    - Salem
-    - Eugene
+    - Portland, OR
+    - Salem, OR
+    - Eugene, OR
   Pennsylvania:
-    - Philadelphia
-    - Pittsburgh
-    - Allentown
+    - Philadelphia, PA
+    - Pittsburgh, PA
+    - Allentown, PA
   Rhode Island:
-    - Providence
-    - Warwick
-    - Cranston
+    - Providence, RI
+    - Warwick, RI
+    - Cranston, RI
   South Carolina:
-    - Charleston
-    - Columbia
-    - Greenville
+    - Charleston, RI
+    - Columbia, RI
+    - Greenville, RI
   South Dakota:
-    - Sioux Falls
-    - Rapid City
-    - Aberdeen
+    - Sioux Falls, RI
+    - Rapid City, RI
+    - Aberdeen, RI
   Tennessee:
-    - Nashville
-    - Memphis
-    - Knoxville
+    - Nashville, TN
+    - Memphis, TN
+    - Knoxville, TN
   Texas:
-    - Houston
-    - Dallas
-    - Austin
-    - San Antonio
+    - Houston, TX
+    - Dallas, TX
+    - Austin, TX
+    - San Antonio, TX
   Utah:
-    - Salt Lake City
-    - West Valley City
-    - Provo
+    - Salt Lake City, UT
+    - West Valley City, UT
+    - Provo, UT
   Vermont:
-    - Burlington
-    - Montpelier
-    - Rutland
+    - Burlington, VT
+    - Montpelier, VT
+    - Rutland, VT
   Virginia:
-    - Virginia Beach
-    - Richmond
-    - Norfolk
+    - Virginia Beach, VA
+    - Richmond, VA
+    - Norfolk, vA
   Washington:
-    - Seattle
-    - Spokane
-    - Tacoma
+    - Seattle, WA
+    - Spokane, WA
+    - Tacoma, WA
   West Virginia:
-    - Charleston
-    - Huntington
-    - Morgantown
+    - Charleston, WV
+    - Huntington, WV
+    - Morgantown, WV
   Wisconsin:
-    - Milwaukee
-    - Madison
-    - Green Bay
+    - Milwaukee, WI
+    - Madison, WI
+    - Green Bay, WI
   Wyoming:
-    - Cheyenne
-    - Casper
-    - Laramie
+    - Cheyenne, WY
+    - Casper, WY
+    - Laramie, WY
