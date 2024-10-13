@@ -9,6 +9,7 @@ api_key = ""
 api_file = "auth.yaml"
 base_url = "http://api.weatherapi.com/v1/current.json"
 db_passwd = ""
+mongo_usr = ""
 
 
 def get_data_from_city(city: str):
@@ -27,6 +28,7 @@ try:
     with(open(api_file, 'r') as f):
         config = yaml.safe_load(f)
         api_key = config['weather_data_api']
+        mongo_usr = config['mongodb_user']
         db_passwd = config['mongodb_password']
 
 except FileNotFoundError:
@@ -41,12 +43,17 @@ except FileNotFoundError:
 
 usa_major_cities = USA_Major_Cities['USA_Major_Cities']
 
-mongo_uri = "mongodb+srv://ahoque245:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+mongo_uri = f"mongodb+srv://{mongo_usr}:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 spark = SparkSession \
     .builder \
     .appName("Spark SQL weather data transform")\
     .config("spark.mongodb.write.connection.uri", mongo_uri) \
+    .config('spark.jars.packages', 'org.mongodb.spark:mongo-spark-connector_2.12:2.4.0')\
     .getOrCreate()
+
+
+
+# uncomment this when you figure out spark
 
 data = []
 curr_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -70,8 +77,9 @@ df.show(df.count())
 # TODO: upload to database
 
 df.write \
-.format("mongodb")\
+.format("com.mongodb.spark.sql.DefaultSource")\
 .mode("overwrite")\
+.option("uri", mongo_uri)\
 .option("database", "weather_data")\
 .option("collection", "weather")\
 .save()
