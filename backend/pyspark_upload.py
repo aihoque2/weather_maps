@@ -5,6 +5,11 @@ from pyspark.sql import SparkSession
 from utils import us_state_to_abbrev
 import datetime
 
+"""
+Pipeline for requesting data then 
+uploading the data to a mongoDB database
+"""
+
 api_key = ""
 api_file = "auth.yaml"
 base_url = "http://api.weatherapi.com/v1/current.json"
@@ -74,7 +79,7 @@ for state in usa_major_cities.keys():
 df = spark.createDataFrame(data)
 df.show(df.count())
 
-# TODO: upload to database
+# Upload to database
 
 df.write \
 .format("com.mongodb.spark.sql.DefaultSource")\

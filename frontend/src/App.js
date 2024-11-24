@@ -1,10 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import ButtonMenu from './components/ButtonMenu';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+        <ButtonMenu></ButtonMenu>
         <p>
           Put some map of some weather data here or something idk
         </p>
@@ -17,7 +18,6 @@ function App() {
         >
           Git Gud
         </a>
-      </header>
     </div>
   );
 }
