@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-export default function ButtonMenu() {
-    const [selectedValue, setSelectedValue] = useState("start");
+export default function ButtonMenu(props) {
+
+    const setMode = props.setMode;
 
     const options = [ 
         {label: "Starter", value: "start"},
@@ -10,9 +11,10 @@ export default function ButtonMenu() {
         { label: "Humidity", value: "humid" },
     ];
 
+    
     const handleChange = (value) => {
-        setSelectedValue(value);
-        console.log("Selected:", value);
+        setMode(value);
+        console.log("Selected:", props.mode);
     };
 
     return (
@@ -23,18 +25,19 @@ export default function ButtonMenu() {
                     style={{
                         ...styles.option,
                         backgroundColor:
-                            selectedValue === option.value
+                            props.mode === option.value
                                 ? "#2ecc71" // Selected background color (green)
                                 : "#ecf0f1", // Unselected background color (light gray)
                         color:
-                            selectedValue === option.value ? "#ffffff" : "#7f8c8d", // Selected/unselected font color
+                            props.mode === option.value ? "#ffffff" : "#7f8c8d", // Selected/unselected font color
+                        transition: "all 0.3s slide",
                     }}
                 >
                     <input
                         type="radio"
                         name="buttonMenu"
                         value={option.value}
-                        checked={selectedValue === option.value}
+                        checked={props.mode === option.value}
                         onChange={() => handleChange(option.value)}
                         style={styles.radioInput}
                     />
