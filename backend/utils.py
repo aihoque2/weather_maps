@@ -57,3 +57,4 @@ us_state_to_abbrev = {
     "United States Minor Outlying Islands": "UM",
     "U.S. Virgin Islands": "VI",
 }
+US_abbrev_to_state = {v : k for k,v in us_state_to_abbrev.items()}

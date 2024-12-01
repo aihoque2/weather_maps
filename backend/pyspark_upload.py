@@ -4,6 +4,7 @@ import yaml
 from pyspark.sql import SparkSession
 from utils import us_state_to_abbrev
 import datetime
+from tqdm import tqdm
 
 """
 Pipeline for requesting data then 
@@ -39,6 +40,9 @@ try:
 except FileNotFoundError:
     print("'%s' file not found:" % filename)
 
+
+mongo_uri = f"mongodb+srv://{mongo_usr}:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
 USA_Major_Cities = {}
 try:
     with(open('cities.yaml', 'r') as f):
@@ -48,7 +52,6 @@ except FileNotFoundError:
 
 usa_major_cities = USA_Major_Cities['USA_Major_Cities']
 
-mongo_uri = f"mongodb+srv://{mongo_usr}:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 spark = SparkSession \
     .builder \
     .appName("Spark SQL weather data transform")\
@@ -62,7 +65,7 @@ spark = SparkSession \
 
 data = []
 curr_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
-for state in usa_major_cities.keys():
+for state in tqdm(usa_major_cities.keys()):
     for city in usa_major_cities[state]:
         
         raw_data = get_data_from_city(city)
