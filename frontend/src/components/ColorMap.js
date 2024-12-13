@@ -1,40 +1,26 @@
-import USAMapSelect from 'react-usa-map-select'
-
-/*
-colorMaps takes in the mode and 
-then queries the data for the
-mode passed in as a prop
-*/
+import React, { useState } from "react";
+import USAMap from "react-usa-map";
+import "./ColorMap.css"
 
 const ColorMap = (props) => {
+    const mode = props.mode
+    const [hoveredState, setHoveredState] = useState(null); // Track hovered state
+
     const handleClick = (event) => {
-     // Handle click event
-     console.log(`Clicked on state: ${event.currentTarget.getAttribute('name')}`);
+        console.log(`Clicked on state: ${event.target.dataset.name}`);
     };
-   
-    const handleMouseEnter = (event) => {
-     // Handle mouse enter event
-     console.log(`Mouse entered state: ${event.currentTarget.getAttribute('name')}`);
+
+    // Define custom styles and event handlers for the map
+    const statesCustomConfig = () => {
     };
-   
-    const handleMouseLeave = () => {
-     // Handle mouse leave event
-     console.log('Mouse left a state');
-    };
-   
+
     return (
-     <>
-      <h1>Interactive USA Map</h1>
-      <USAMapSelect
-       onClick={handleClick}
-       onUSAStateMouseEnter={handleMouseEnter}
-       onUSAStateMouseLeave={handleMouseLeave}
-       showStateNameOnHover={true}
-       USAStateOnHoverColor="blue"
-       USAStateOnHoverStrokeColor="white"
-      />
-     </>
+        <div style={{ textAlign: "center", margin: "20px" }}>
+            <h1>{mode}</h1>
+            <USAMap customize={statesCustomConfig} onClick={handleClick}/>
+            <p>Hovered State: {hoveredState ? hoveredState : "None"}</p>
+        </div>
     );
-   };
-   
-   export default ColorMap;
+};
+
+export default ColorMap;

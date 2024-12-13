@@ -1,7 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import ButtonMenu from './components/ButtonMenu';
-import USAMap from "react-usa-map";
+import ColorMap from './components/ColorMap';
+
 
 import {useState} from 'react'
 
@@ -23,7 +24,7 @@ function App() {
   if (mode === "start"){
     graphic = <img src={logo} className="App-logo" alt="logo" />;
   } else{
-    graphic = <USAMap onClick={mapHandler} onHover={hoverHandle}/>;
+    graphic = <ColorMap mode={mode} onClick={mapHandler}/>;
 
   }
 
