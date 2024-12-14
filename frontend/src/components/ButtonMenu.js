@@ -6,9 +6,9 @@ export default function ButtonMenu(props) {
 
     const options = [ 
         {label: "Starter", value: "start"},
-        { label: "Temperature", value: "temp" },
-        { label: "Wind Speed", value: "wind" },
-        { label: "Humidity", value: "humid" },
+        { label: "Temperature", value: "temperature" },
+        { label: "Wind Speed", value: "wind speed" },
+        { label: "Humidity", value: "humidity" },
     ];
 
     

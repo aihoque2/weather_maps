@@ -60,7 +60,6 @@ spark = SparkSession \
     .getOrCreate()
 
 
-
 # uncomment this when you figure out spark
 
 data = []
