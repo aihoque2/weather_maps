@@ -14,9 +14,7 @@ function App() {
   const mapHandler = (event) => {
     console.log(event.target.dataset.name);
   };
-  const hoverHandle = (event) => {
-    console.log("here's state: ", event.target.dataset.name);
-  };
+
 
   let graphic; 
 
