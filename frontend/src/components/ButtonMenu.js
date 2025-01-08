@@ -9,6 +9,7 @@ export default function ButtonMenu(props) {
         { label: "Temperature", value: "temperature" },
         { label: "Wind Speed", value: "wind speed" },
         { label: "Humidity", value: "humidity" },
+        { label: "Test", value: "test"},
     ];
 
     

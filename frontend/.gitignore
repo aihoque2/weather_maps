@@ -24,3 +24,5 @@ yarn-error.log*
 package-log.json
 
 src/extras/DBauth.js
+src/cities.yaml
+src/db/auth.yaml

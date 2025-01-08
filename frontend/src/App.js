@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import ButtonMenu from './components/ButtonMenu';
 import ColorMap from './components/ColorMap';
+import TestHumidity from './components/TestComponent';
 
 
 import {useState} from 'react'
@@ -21,7 +22,10 @@ function App() {
   console.log("mode: ", mode);
   if (mode === "start"){
     graphic = <img src={logo} className="App-logo" alt="logo" />;
-  } else{
+  }else if (mode === "test"){
+    graphic = <TestHumidity></TestHumidity>
+  } 
+  else{
     graphic = <ColorMap mode={mode} onClick={mapHandler}/>;
 
   }

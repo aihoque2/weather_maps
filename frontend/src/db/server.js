@@ -3,6 +3,8 @@ const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
 const {Weather} = require("models/Weather.js");
 
+const mongoose = require("mongoose")
+
 
 // define your schemas
 const TemperatureTypeDef = gql`
@@ -16,7 +18,7 @@ const TemperatureTypeDef = gql`
     type Query{
         getMostRescentTemperature: [Temperature!]!
     }
-    `;
+`; 
 
 const HumidityTypeDefs = gql`
     type Humidity{
@@ -29,7 +31,7 @@ const HumidityTypeDefs = gql`
     type Query{
         getMostRecentHumidity(city: String!, state: String!): Humidity
     }
-`
+`;
 
 const WindSpeedTypeDefs = gql`
     type WindSpeed {
@@ -42,7 +44,7 @@ const WindSpeedTypeDefs = gql`
     type Query{
         getMostRecentWindSpeed: [WindSpeed!]
     }
-`
+`;
 
 const TemperatureResolvers = {
     Query:{
@@ -62,24 +64,13 @@ const TemperatureResolvers = {
             ]);
         },
     },
-}
+};
 
 const HumidityResolvers = {
     Query: {
-      getMostRecentHumidity: async () => {
-        return await mongoose.model("Weather").aggregate([
-          { $sort: { state: 1, city: 1, timestamp: -1 } },
-          {
-            $group: {
-              _id: "$city",
-              city: { $first: "$city" },
-              state: { $first: "$state" },
-              humidity: { $first: "$humidity" },
-              timestamp: { $first: "$timestamp" },
-            },
-          },
-          ,
-        ]);
+      getMostRecentHumidity: async (_,{city, state}) => {
+        return await mongoose.model("Weather").findOne({city, state})
+        .sort({timestamp: -1}).exec()
       },
     },
 };
@@ -104,15 +95,20 @@ const WindSpeedResolvers = {
     },
 };
 
+
+mongoose.connect()
+
 const TypeDefs = mergeTypeDefs([
   TemperatureTypeDef,
   HumidityTypeDefs,
   WindSpeedTypeDefs                           
 ]);
 
-const resolvers = mergeResolvers([HumidityResolvers, 
+const resolvers = mergeResolvers([
+  HumidityResolvers, 
   TemperatureResolvers, 
-  WindSpeedResolvers]);
+  WindSpeedResolvers
+]);
 
 const server = new ApolloServer({TypeDefs, resolvers,});
 
