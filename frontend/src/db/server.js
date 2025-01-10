@@ -2,6 +2,13 @@ const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
 const {Weather} = require("models/Weather.js");
+import yaml from "js-yaml"
+
+/*
+TODO: use this guy's code for reference:
+https://codedamn.com/news/databases/mongodb-graphql
+*/
+
 
 const mongoose = require("mongoose")
 
@@ -95,8 +102,19 @@ const WindSpeedResolvers = {
     },
 };
 
+const info_dict = yaml.load('auth.yaml');
+username = info_dict['mongodb_user'];
+password = info_dict['mongodb_password'];
 
-mongoose.connect()
+mongoose
+    .connect(`mongodb+srv://${username}:${password}@cluster0-yhukr.mongodb.net/test?retryWrites=true&w=majority`)
+    .then( () => {
+        console.log('MongoDB connected successfully')
+    })
+    .error( () => {
+        console.error('Error while connecting to MongoDB');
+    })
+
 
 const TypeDefs = mergeTypeDefs([
   TemperatureTypeDef,
