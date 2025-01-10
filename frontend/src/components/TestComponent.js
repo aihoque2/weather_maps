@@ -19,6 +19,13 @@ export default function TestHumidity(props) {
     const state_name = "Missouri";
 
 
-    const data = GET_HUMIDITY_BY_CITY_STATE(city_name, state_name);
+    const {loading, error, data} = useQuery(GET_HUMIDITY_BY_CITY_STATE(city_name, state_name), 
+                                            {variables: {city_name, state_name}});
+
+
+    if (loading) return <h1>LOADING....</h1>;
+    if (error) return <h1>`Error! ${error}`</h1>;
+
+    return<h1>data.getMostRecentHumidity.humidity</h1>
 
 }
