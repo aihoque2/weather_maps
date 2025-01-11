@@ -2,7 +2,7 @@ const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
 const {Weather} = require("models/Weather.js");
-import yaml from "js-yaml"
+const {yaml} = require("js-yaml");
 
 /*
 TODO: use this guy's code for reference:
@@ -56,7 +56,7 @@ const WindSpeedTypeDefs = gql`
 const TemperatureResolvers = {
     Query:{
         getMostRecentTemperature: async() =>{
-            return await mongsoose.model("Weather").aggregate([
+            return await Weather.aggregate([
                 {$sort: {state: 1, city:1, timestamap: -1}},
                 {
                     $group: {
@@ -76,7 +76,7 @@ const TemperatureResolvers = {
 const HumidityResolvers = {
     Query: {
       getMostRecentHumidity: async (_,{city, state}) => {
-        return await mongoose.model("Weather").findOne({city, state})
+        return await Weather.findOne({city, state})
         .sort({timestamp: -1}).exec()
       },
     },
@@ -85,7 +85,7 @@ const HumidityResolvers = {
 const WindSpeedResolvers = {
     Query: {
       getMostRecentHumidity: async () => {
-        return await mongoose.model("Weather").aggregate([
+        return await Weather.aggregate([
           { $sort: { state: 1, city: 1, timestamp: -1 } },
           {
             $group: {
