@@ -1,8 +1,9 @@
+const auth = require("./auth.json")
 const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
-const {Weather} = require("models/Weather.js");
-const {yaml} = require("js-yaml");
+const {Weather} = require("./models/Weather.js");
+const mongoose = require("mongoose");
 
 /*
 TODO: use this guy's code for reference:
@@ -10,7 +11,19 @@ https://codedamn.com/news/databases/mongodb-graphql
 */
 
 
-const mongoose = require("mongoose")
+
+const username = auth["mongodb_user"];
+const password = auth["mongodb_password"]
+
+mongoose
+    .connect(`mongodb+srv://${username}:${password}@cluster0-yhukr.mongodb.net/test?retryWrites=true&w=majority`)
+    .then( () => {
+        console.log('MongoDB connected successfully')
+    })
+    .catch( (e) => {
+        console.error('Error while connecting to MongoDB:', e);
+    });
+
 
 
 // define your schemas
@@ -23,7 +36,7 @@ const TemperatureTypeDef = gql`
     }
 
     type Query{
-        getMostRescentTemperature: [Temperature!]!
+        getMostRecentTemperature: [Temperature!]!
     }
 `; 
 
@@ -102,25 +115,14 @@ const WindSpeedResolvers = {
     },
 };
 
-const info_dict = yaml.load('auth.yaml');
-username = info_dict['mongodb_user'];
-password = info_dict['mongodb_password'];
+console.log("finished ze declarations");
 
-mongoose
-    .connect(`mongodb+srv://${username}:${password}@cluster0-yhukr.mongodb.net/test?retryWrites=true&w=majority`)
-    .then( () => {
-        console.log('MongoDB connected successfully')
-    })
-    .error( () => {
-        console.error('Error while connecting to MongoDB');
-    })
-
-
-const TypeDefs = mergeTypeDefs([
+const typeDefs = mergeTypeDefs([
   TemperatureTypeDef,
   HumidityTypeDefs,
   WindSpeedTypeDefs                           
 ]);
+console.log("typedefs");
 
 const resolvers = mergeResolvers([
   HumidityResolvers, 
@@ -128,8 +130,11 @@ const resolvers = mergeResolvers([
   WindSpeedResolvers
 ]);
 
-const server = new ApolloServer({TypeDefs, resolvers,});
 
+// server setup
+const server = new ApolloServer({typeDefs, resolvers});
+
+// start the server
 server.listen().then(({url}) =>{console.log(`server ready at url: ${url}`)});
 
 
