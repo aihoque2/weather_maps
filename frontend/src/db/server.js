@@ -2,8 +2,8 @@ const auth = require("./auth.json")
 const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
-const {Weather} = require("./models/Weather.js");
-const mongoose = require("mongoose");
+const Weather = require("./models/Weather.js"); // module.exports
+const {mongoose} = require("mongoose");
 
 /*
 TODO: use this guy's code for reference:
@@ -14,15 +14,23 @@ https://codedamn.com/news/databases/mongodb-graphql
 
 const username = auth["mongodb_user"];
 const password = auth["mongodb_password"]
+const uri = `mongodb+srv://${username}:${password}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const client_options = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
 mongoose
-    .connect(`mongodb+srv://${username}:${password}@cluster0-yhukr.mongodb.net/test?retryWrites=true&w=majority`)
+    .connect(uri, client_options)
     .then( () => {
-        console.log('MongoDB connected successfully')
+        return mongoose.connection.db.admin().command({ping: 1})
+    }).then((result) => {
+        console.log("successfully connected to MongoDB: ", result)
     })
-    .catch( (e) => {
+    .catch((e) => {
         console.error('Error while connecting to MongoDB:', e);
-    });
+    })/*.finally(() =>{
+        mongoose.disconnect().then(() => {
+        console.log("Disconnected from MongoDB.");
+        })
+    });*/
 
 
 
@@ -70,7 +78,7 @@ const TemperatureResolvers = {
     Query:{
         getMostRecentTemperature: async() =>{
             return await Weather.aggregate([
-                {$sort: {state: 1, city:1, timestamap: -1}},
+                {$sort: {state: 1, city:1, timestamp: -1}},
                 {
                     $group: {
                         _id: "$city",
@@ -90,7 +98,7 @@ const HumidityResolvers = {
     Query: {
       getMostRecentHumidity: async (_,{city, state}) => {
         return await Weather.findOne({city, state})
-        .sort({timestamp: -1}).exec()
+        .sort({timestamp: -1}).exec();
       },
     },
 };
@@ -115,14 +123,12 @@ const WindSpeedResolvers = {
     },
 };
 
-console.log("finished ze declarations");
 
 const typeDefs = mergeTypeDefs([
   TemperatureTypeDef,
   HumidityTypeDefs,
   WindSpeedTypeDefs                           
 ]);
-console.log("typedefs");
 
 const resolvers = mergeResolvers([
   HumidityResolvers, 

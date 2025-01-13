@@ -26,7 +26,6 @@ def get_data_from_city(city: str):
     """
     params={"key": api_key, "q": city}
     response = requests.get(base_url, params)
-    print("here's the url: ", response.request.url)
     
     return response.json() if response.status_code == 200 else None
 

@@ -9,4 +9,4 @@ const weatherSchema = new mongoose.Schema({
     timestamp: Date,
 });
   
-module.exports = mongoose.model("Weather", weatherSchema);
+module.exports = mongoose.model("weather_data", weatherSchema);
