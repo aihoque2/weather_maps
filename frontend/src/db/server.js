@@ -97,7 +97,10 @@ const TemperatureResolvers = {
 const HumidityResolvers = {
     Query: {
       getMostRecentHumidity: async (_,{city, state}) => {
-        return await Weather.findOne({city, state})
+        return await Weather.findOne({
+            city: new RegExp(`^${city}$`, "i"), 
+            state,
+        })
         .sort({timestamp: -1}).exec();
       },
     },

@@ -1,4 +1,4 @@
-const state_to_name = {
+const initial_object = {
     "AL": "Alabama",
     "AK": "Alaska",
     "AZ": "Arizona",
@@ -51,5 +51,7 @@ const state_to_name = {
     "WY": "Wyoming",
     "DC": "District of Columbia",
 };
+
+const state_to_name = new Map(Object.entries(initial_object));
 
 export default state_to_name;

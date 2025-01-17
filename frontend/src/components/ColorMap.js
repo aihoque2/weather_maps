@@ -9,10 +9,17 @@ const ColorMap = (props) => {
 
     const calculateFill = (state) =>
     {
-        /*given the value
+        /*
+        TODO:
+
+        given the value
         to fill with, return
         the RGB value for this fill.
         */
+       const full_name = state_to_name[state];
+       if (mode === "humidity"){}
+       else if (mode === "wind_speed"){}
+       else if (mode === "temperature"){}
     }   
 
     const handleClick = (event) => {
@@ -20,8 +27,6 @@ const ColorMap = (props) => {
     };
 
     // Define custom styles and event handlers for the map
-    const statesCustomConfig = () => {
-    };
 
     return (
         <div style={{ textAlign: "center", margin: "20px" }}>
