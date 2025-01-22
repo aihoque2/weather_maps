@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Weather = require("./models/Weather.js"); // Adjust this path to point to your Weather model
+const {Weather} = require("./models/Weather.js"); // Adjust this path to point to your Weather model
 const auth = require("./auth.json");
 
 const username = auth["mongodb_user"];
@@ -12,23 +12,31 @@ const client_options = { serverApi: { version: '1', strict: true, deprecationErr
 async function testQuery() {
   try {
     // Connect to MongoDB
-mongoose
-    .connect(uri, client_options)
+    await mongoose.connect(uri, client_options)
     .then( () => {
+        console.log("I pinged!")
         return mongoose.connection.db.admin().command({ping: 1})
-    }).then((result) => {
-        console.log("successfully connected to MongoDB: ", result);
-        Weather.findOne({state: "Missouri"}).then((res)=>{
-            console.log("insitde then result: ", res)
-        })
+
     })
     .catch((e) => {
         console.error('Error while connecting to MongoDB:', e);
     });
 
+    console.log("connected to mongodb!")
+
     // Run a sample query
-    const result = await Weather.findOne({state: "Missouri"});
-    console.log("Query result:", result);
+    const result = await Weather.find({state: "California"}).exec();
+    console.log("here's result: ");
+    console.log(result);
+
+
+    let listOfCollections = Object.keys(mongoose.connection.collections);
+    console.log("here's the collections: ");
+    console.log(listOfCollections);
+
+    let documents = await mongoose.connection.db.collection("weathers").find({state: "Missouri"}).toArray();
+    console.log("here's some documents: ");
+    console.log(documents);
 
     // Disconnect
     await mongoose.disconnect();
