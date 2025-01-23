@@ -10,7 +10,7 @@ export const GET_HUMIDITY_BY_CITY_STATE = gql`
       city
       state
       humidity
-      timestamp
+      time
     }
   }
 `;

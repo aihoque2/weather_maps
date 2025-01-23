@@ -2,7 +2,7 @@ const auth = require("./auth.json")
 const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
-const Weather = require("./models/Weather.js"); // module.exports
+const {Weather} = require("./models/Weather.js"); // module.exports
 const {mongoose} = require("mongoose");
 
 /*
@@ -14,7 +14,8 @@ https://codedamn.com/news/databases/mongodb-graphql
 
 const username = auth["mongodb_user"];
 const password = auth["mongodb_password"]
-const uri = `mongodb+srv://${username}:${password}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const db_name = auth["db_name"];
+const uri = `mongodb+srv://${username}:${password}@cluster0.g81bj.mongodb.net/${db_name}?retryWrites=true&w=majority&appName=Cluster0`;
 const client_options = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
 mongoose
@@ -40,7 +41,7 @@ const TemperatureTypeDef = gql`
         city: String!
         state: String!
         temperature: Float!
-        timestamp: String!
+        time: String!
     }
 
     type Query{
@@ -53,7 +54,7 @@ const HumidityTypeDefs = gql`
         city: String!
         state: String!
         humidity: Float!
-        timestamp: String!
+        time: String!
     }
 
     type Query{
@@ -66,7 +67,7 @@ const WindSpeedTypeDefs = gql`
         city: String!
         state: String!
         wind_speed: Float!
-        timestamp: String!
+        time: String!
     }
 
     type Query{
@@ -78,14 +79,14 @@ const TemperatureResolvers = {
     Query:{
         getMostRecentTemperature: async() =>{
             return await Weather.aggregate([
-                {$sort: {state: 1, city:1, timestamp: -1}},
+                {$sort: {state: 1, city:1, time: -1}},
                 {
                     $group: {
                         _id: "$city",
                         city: {$first: "$city"},
                         state: {$first: "$state"},
                         temperature: {$first: "$temperature"},
-                        timestamp: {$first: "$timestamp"}
+                        time: {$first: "$time"}
                     },
                 },
                 { $sort: { state: 1, city: 1 } },
@@ -97,25 +98,32 @@ const TemperatureResolvers = {
 const HumidityResolvers = {
     Query: {
       getMostRecentHumidity: async (_,{city, state}) => {
-        const result = await Weather.findOne({ city, state }).sort({ timestamp: -1 }).exec();
-        console.log("Query result:", result);
-        return result;
+        try{
+            const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+            console.log("Query result:", result);
+            return result;
+        }
+        catch{
+            console.error("Error fetching humidity:", err);
+            throw new Error("Error fetching humidity data.");
+    
+        }
       },
     },
 };
 
 const WindSpeedResolvers = {
     Query: {
-      getMostRecentHumidity: async () => {
+      getMostRecentWindSpeed: async () => {
         return await Weather.aggregate([
-          { $sort: { state: 1, city: 1, timestamp: -1 } },
+          { $sort: { state: 1, city: 1, time: -1 } },
           {
             $group: {
               _id: "$city",
               city: { $first: "$city" },
               state: { $first: "$state" },
               wind_speed: { $first: "$wind_speed" },
-              timestamp: { $first: "$timestamp" },
+              time: { $first: "$time" },
             },
           },
           { $sort: { state: 1, city: 1 } },

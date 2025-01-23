@@ -6,9 +6,9 @@ const weatherSchema = new mongoose.Schema({
     temperature: Number,
     humidity: Number,
     wind_speed: Number,
-    timestamp: Date,
-});
+    time: Date,
+}, {collection: 'weather'});
   
-const Weather = mongoose.model("weathers", weatherSchema);
+const Weather = mongoose.model("weather", weatherSchema);
 
 module.exports = {Weather}
