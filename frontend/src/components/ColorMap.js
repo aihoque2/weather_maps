@@ -26,6 +26,8 @@ const ColorMap = (props) => {
         console.log(`Clicked on state: ${event.target.dataset.name}`);
     };
 
+    const statesCustomConfig = {}
+
     // Define custom styles and event handlers for the map
 
     return (
