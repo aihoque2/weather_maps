@@ -45,7 +45,7 @@ const TemperatureTypeDef = gql`
     }
 
     type Query{
-        getMostRecentTemperature: [Temperature!]!
+        getMostRecentTemperature(city: String!, state: String!): Temperature
     }
 `; 
 
@@ -71,26 +71,23 @@ const WindSpeedTypeDefs = gql`
     }
 
     type Query{
-        getMostRecentWindSpeed: [WindSpeed!]
+        getMostRecentWindSpeed(city: String!, state: String!): WindSpeed
     }
 `;
 
 const TemperatureResolvers = {
     Query:{
-        getMostRecentTemperature: async() =>{
-            return await Weather.aggregate([
-                {$sort: {state: 1, city:1, time: -1}},
-                {
-                    $group: {
-                        _id: "$city",
-                        city: {$first: "$city"},
-                        state: {$first: "$state"},
-                        temperature: {$first: "$temperature"},
-                        time: {$first: "$time"}
-                    },
-                },
-                { $sort: { state: 1, city: 1 } },
-            ]);
+        getMostRecentTemperature: async (_,{city, state}) =>{
+            try{
+                const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+                console.log("Query result:", result);
+                return result;
+            }
+            catch{
+                console.error("Error fetching temperature:", err);
+                throw new Error("Error fetching temperature data.");
+        
+            }
         },
     },
 };
@@ -114,20 +111,17 @@ const HumidityResolvers = {
 
 const WindSpeedResolvers = {
     Query: {
-      getMostRecentWindSpeed: async () => {
-        return await Weather.aggregate([
-          { $sort: { state: 1, city: 1, time: -1 } },
-          {
-            $group: {
-              _id: "$city",
-              city: { $first: "$city" },
-              state: { $first: "$state" },
-              wind_speed: { $first: "$wind_speed" },
-              time: { $first: "$time" },
-            },
-          },
-          { $sort: { state: 1, city: 1 } },
-        ]);
+      getMostRecentWindSpeed: async (_,{city, state}) => {
+        try{
+            const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+            console.log("Query result:", result);
+            return result;
+        }
+        catch{
+            console.error("Error fetching wind_speed:", err);
+            throw new Error("Error fetching wind_speed data.");
+    
+        }
       },
     },
 };

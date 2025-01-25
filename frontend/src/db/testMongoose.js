@@ -43,4 +43,5 @@ async function testQuery() {
 }
 
 // Call the function
-testQuery();
+const someFunc = testQuery;
+someFunc()
