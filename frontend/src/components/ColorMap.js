@@ -2,8 +2,17 @@ import React, { useState } from "react";
 import USAMap from "react-usa-map";
 import "./ColorMap.css"
 import state_to_name from "../extras/StateToName.js";
+import { useQuery } from "@apollo/client";
+
+
+const us_states_subset = ["Missouri", "Pennsylvania", "California"] // subset to play around with first
 
 const get_full_name = (mode, full_name) => {
+
+        /*
+        present whether data is Humidity,
+        Wind Speed, or Temperature. 
+        */
         if (mode === "humidity"){return "Humidity" }
        else if (mode === "wind_speed"){return "Wind Speed"}
        else if (mode === "temperature"){return "Temperature"}
@@ -28,8 +37,31 @@ const ColorMap = (props) => {
     
     let full_name = get_full_name(mode)
 
+    let us_states_data = {}
 
-    const calculateFill = (us_state) =>
+    const queryData = (state) =>{
+        /*
+        query data based on the 'mode' prop
+        depending on the mode, we will
+        have to get average value for the
+        state's mode (temp, humid, wind)
+        */
+
+        if (mode === "temperature") {
+            // Blue (cold) → Red (hot)
+
+        } 
+        else if (mode === "humidity") {
+            // Desert sand/gold brown (dry) → Green (humid)
+        } 
+        else if (mode === "wind_speed") {
+            // Light Gray (calm) → Orange (intense)
+        }    
+    }
+
+    let min = 0;
+    let max = 200;
+    const calculateFill = (us_state, value) =>
     {
         /*
         TODO:
@@ -38,18 +70,44 @@ const ColorMap = (props) => {
         to fill, return
         the RGB value for this fill.
         */
+        const ratio = Math.min(Math.max((value - min) / (max - min), 0), 1);
+
+        if (mode === "temperature") {
+            // Blue (cold) → Red (hot)
+            return interpolateColor(ratio, 0, 0, 255, 255, 0, 0);
+        } 
+        else if (mode === "humidity") {
+            // Desert sand/gold brown (dry) → Green (humid)
+            return interpolateColor(ratio, 194, 154, 89, 34, 139, 34);
+        } 
+        else if (mode === "wind_speed") {
+            // Light Gray (calm) → Orange (intense)
+            return interpolateColor(ratio, 200, 200, 200, 255, 140, 0);
+        }
+        return "rgb(200, 200, 200)";
 
     }   
 
-    const handleClick = (event) => {
-        console.log(`Clicked on state: ${event.target.dataset.name}`);
-    };
 
-    const statesCustomConfig = {}
+
+    /* 
+    get the avg {MODE} of 
+    
+    */ 
+    for (let i = 0; i < us_states_subset.length; i++){
+        console.log("here's US state:");
+        console.log(us_states_subset[i])
+    }
 
     calculateFill(null)
 
     // Define custom styles and event handlers for the map
+    const statesCustomConfig = {}
+    
+    const handleClick = (event) => {
+        console.log(`Clicked on state: ${event.target.dataset.name}`);
+    };
+
 
     return (
         <div style={{ textAlign: "center", margin: "20px" }}>
