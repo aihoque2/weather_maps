@@ -11,8 +11,8 @@ import { GET_HUMIDITY_BY_CITY_STATE} from "../db/queries.js"; // Import the quer
 
 
 export default function TestHumidity(props) {
-    const city_name = "Saint Louis, MO";
-    const state_name = "Missouri";
+    const city_name = "San Diego, CA";
+    const state_name = "California";
 
     const {loading, error, data} = useQuery(GET_HUMIDITY_BY_CITY_STATE, 
                                             {variables: {city: city_name, state: state_name}});
@@ -26,6 +26,7 @@ export default function TestHumidity(props) {
     return(
         <>
         <h3>I Present to You {data.getMostRecentHumidity.__typename}</h3>
+        <h3> Of {city_name.substring(0, city_name.length-4)}, {state_name}</h3>
         <h1>{data.getMostRecentHumidity.humidity}</h1>
         </>
     )

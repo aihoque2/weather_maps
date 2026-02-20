@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import logo from './weather_maps_logo.png';
 import './App.css';
 import ButtonMenu from './components/ButtonMenu';
 import ColorMap from './components/ColorMap';
