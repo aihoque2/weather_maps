@@ -83,7 +83,7 @@ const TemperatureResolvers = {
                 console.log("Query result:", result);
                 return result;
             }
-            catch{
+            catch(err){
                 console.error("Error fetching temperature:", err);
                 throw new Error("Error fetching temperature data.");
         
@@ -100,7 +100,7 @@ const HumidityResolvers = {
             console.log("Query result:", result);
             return result;
         }
-        catch{
+        catch(err){
             console.error("Error fetching humidity:", err);
             throw new Error("Error fetching humidity data.");
     
@@ -117,7 +117,7 @@ const WindSpeedResolvers = {
             console.log("Query result:", result);
             return result;
         }
-        catch{
+        catch(err){
             console.error("Error fetching wind_speed:", err);
             throw new Error("Error fetching wind_speed data.");
     

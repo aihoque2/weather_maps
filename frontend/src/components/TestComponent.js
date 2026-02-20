@@ -10,7 +10,7 @@ import { GET_HUMIDITY_BY_CITY_STATE} from "../db/queries.js"; // Import the quer
 
 export default function TestHumidity(props) {
     
-    const city_name = "St. Louis, MO";
+    const city_name = "Saint Louis, MO";
     const state_name = "Missouri";
 
     const {loading, error, data} = useQuery(GET_HUMIDITY_BY_CITY_STATE, 
