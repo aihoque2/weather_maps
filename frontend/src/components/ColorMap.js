@@ -49,7 +49,7 @@ const ColorMap = (props) => {
 
         if (mode === "temperature") {
             // Blue (cold) → Red (hot)
-
+            
         } 
         else if (mode === "humidity") {
             // Desert sand/gold brown (dry) → Green (humid)

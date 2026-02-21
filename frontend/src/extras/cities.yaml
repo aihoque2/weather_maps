@@ -103,9 +103,9 @@ USA_Major_Cities:
     - Saint Louis, MO
     - Springfield, MO
   Montana:
-    - Billings, MO
-    - Missoula, MO
-    - Great Falls, MO
+    - Billings, MT
+    - Missoula, MT
+    - Great Falls, MT
   Nebraska:
     - Omaha, NE
     - Lincoln, NE
@@ -160,13 +160,13 @@ USA_Major_Cities:
     - Warwick, RI
     - Cranston, RI
   South Carolina:
-    - Charleston, RI
-    - Columbia, RI
-    - Greenville, RI
+    - Charleston, SC
+    - Columbia, SC
+    - Greenville, SC
   South Dakota:
-    - Sioux Falls, RI
-    - Rapid City, RI
-    - Aberdeen, RI
+    - Sioux Falls, SD
+    - Rapid City, SD
+    - Aberdeen, SD
   Tennessee:
     - Nashville, TN
     - Memphis, TN
