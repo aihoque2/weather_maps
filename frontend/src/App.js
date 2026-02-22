@@ -21,6 +21,7 @@ function App() {
 
   console.log("mode: ", mode);
   if (mode === "start"){
+    <h1>Welcome to the weather visualizations by state!</h1>
     graphic = <img src={logo} className="App-logo" alt="logo" />;
   }else if (mode === "test"){
     graphic = <TestHumidity></TestHumidity>

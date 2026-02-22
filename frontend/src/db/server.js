@@ -45,7 +45,7 @@ const TemperatureTypeDef = gql`
     }
 
     type Query{
-        getMostRecentTemperature(city: String!, state: String!): Temperature
+        getMostRecentTemperatureByCity(city: String!, state: String!): Temperature
     }
 `; 
 
@@ -58,7 +58,7 @@ const HumidityTypeDefs = gql`
     }
 
     type Query{
-        getMostRecentHumidity(city: String!, state: String!): Humidity
+        getMostRecentHumidityByCity(city: String!, state: String!): Humidity
     }
 `;
 
@@ -71,13 +71,13 @@ const WindSpeedTypeDefs = gql`
     }
 
     type Query{
-        getMostRecentWindSpeed(city: String!, state: String!): WindSpeed
+        getMostRecentWindSpeedByCity(city: String!, state: String!): WindSpeed
     }
 `;
 
 const TemperatureResolvers = {
     Query:{
-        getMostRecentTemperature: async (_,{city, state}) =>{
+        getMostRecentTemperatureByCity: async (_,{city, state}) =>{
             try{
                 const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
                 console.log("Query result:", result);
@@ -94,7 +94,7 @@ const TemperatureResolvers = {
 
 const HumidityResolvers = {
     Query: {
-      getMostRecentHumidity: async (_,{city, state}) => {
+      getMostRecentHumidityByCity: async (_,{city, state}) => {
         try{
             const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
             console.log("Query result:", result);
@@ -111,7 +111,7 @@ const HumidityResolvers = {
 
 const WindSpeedResolvers = {
     Query: {
-      getMostRecentWindSpeed: async (_,{city, state}) => {
+      getMostRecentWindSpeedByCity: async (_,{city, state}) => {
         try{
             const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
             console.log("Query result:", result);

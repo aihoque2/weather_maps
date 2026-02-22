@@ -5,7 +5,7 @@ export default function ButtonMenu(props) {
     const setMode = props.setMode;
 
     const options = [ 
-        {label: "Starter", value: "start"},
+        {label: "Welcome!", value: "start"},
         { label: "Temperature", value: "temperature" },
         { label: "Wind Speed", value: "wind_speed" },
         { label: "Humidity", value: "humidity" },
@@ -55,6 +55,14 @@ const styles = {
         justifyContent: "center",
         gap: "10px", // Space between the options
         marginTop: "20px",
+        position:"fixed",
+        top: 0, // pins to top
+        left: 0,
+        right: 0, // full width
+        zIndex: 1000, // stays above everything
+        //backgroundColor: "#58c0d3", // so content doesn't bleed through
+        padding: "10px 0",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.1)", // subtle shadow so it feels lifted
     },
     option: {
         display: "flex",
