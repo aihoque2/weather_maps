@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import USAMap from "react-usa-map";
-import { useQuery } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import "./ColorMap.css"
 import us_state_to_abbrev from "../extras/NameToAbbv.js"
 
@@ -41,51 +41,34 @@ const interpolateColor = (ratio, r1, g1, b1, r2, g2, b2) => {
 
 const ColorMap = (props) => {
     const mode = props.mode
-    
+    const client = useApolloClient();
     let full_name = get_full_name(mode)
 
-    const queryData = (state_name) =>{
-        /*
-        query data based on the 'mode' prop
-        depending on the mode, we will
-        have to get average value for the
-        state's mode (temp, humid, wind)
-        */
+    const [statesCustomConfig, setStatesCustomConfig] = useState({});
+    const [loading, setLoading] = useState(true);
 
-        if (mode === "temperature") {
-
-        const {loading, error, data} = useQuery(GET_AVG_TEMPERATURE_BY_STATE, 
-                                                    {variables: {state: state_name}});
-        
-            if (loading) return <h1>LOADING....</h1>;
-            if (error) return <h1>Error! No Temperature data found: {error.message}</h1>;
-            if (!data?.getAvgTemperatureByState) return <h1>No data found for {state_name}</h1>;
-                
-        } 
-        else if (mode === "humidity") {
-        const {loading, error, data} = useQuery(GET_AVG_HUMIDITY_BY_STATE, 
-                                                    {variables: {state: state_name}});
-            
-            if (loading) return <h1>LOADING....</h1>;
-            if (error) return <h1>Error! No Humidity data found: {error.message}</h1>;
-            if (!data?.getAvgHumidityByState) return <h1>No Humidity data found for {state_name}</h1>;
-        } 
-        else if (mode === "wind_speed") {
-            const {loading, error, data} = useQuery(GET_AVG_WIND_SPEED_BY_STATE, 
-                                                    {variables: {state: state_name}});
-            if (loading) return <h1>LOADING....</h1>;
-            if (error) return <h1>Error! No Humidity data found: {error.message}</h1>;
-            if (!data?.getAvgWindSPeedByState) return <h1>No Humidity data found for {state_name}</h1>;
-        }    
-        return 0;
+    // pick the right query and field names based on mode
+    const getQueryConfig = () => {
+        if (mode === "temperature") return { 
+            query: GET_AVG_TEMPERATURE_BY_STATE, 
+            resolverName: "getAvgTemperatureByState", 
+            fieldName: "temperature" 
+        };
+        if (mode === "humidity") return { 
+            query: GET_AVG_HUMIDITY_BY_STATE, 
+            resolverName: "getAvgHumidityByState", 
+            fieldName: "humidity" 
+        };
+        if (mode === "wind_speed") return { 
+            query: GET_AVG_WIND_SPEED_BY_STATE, 
+            resolverName: "getAvgWindSpeedByState", 
+            fieldName: "wind_speed" 
+        };
     }
-
 
     const calculateFill = (value, min, max) =>
     {
         /*
-        TODO:
-
         given the us_state
         to fill, return
         the RGB value for this fill.
@@ -98,7 +81,7 @@ const ColorMap = (props) => {
         } 
         else if (mode === "humidity") {
             // Desert sand/gold brown (dry) → Green (humid)
-            return interpolateColor(ratio, 240, 240, 240, 0, 200, 83);
+            return interpolateColor(ratio, 194, 154, 89, 0, 200, 83);
         } 
         else if (mode === "wind_speed") {
             // Light Gray (calm) → Orange (intense)
@@ -108,25 +91,40 @@ const ColorMap = (props) => {
     }  
 
 
-    const statesCustomConfig = {};
-    const stateEntries = [...us_state_to_abbrev.keys()];
-    console.log("here's stateEntries: ", stateEntries);
-    let values = []; // our values of shi
-    for (var entry in stateEntries){
-        values.push(queryData(entry));
-    }
-    const min = Math.min(...values);
-    const max = Math.max(...values);
+    useEffect(() => {
+        const fetchAllStates = async () => {
+            setLoading(true);
+            const { query, resolverName, fieldName } = getQueryConfig();
 
-    for (var entry in stateEntries){
-        var stateAbbrev = us_state_to_abbrev[entry];
-        const modeVal = queryData(entry);
-        const fillVal = calculateFill(modeVal, min, max);
-        statesCustomConfig[stateAbbrev] = { fill: fillVal }
+            // fire all 50 state queries at the same time
+            const results = await Promise.all(
+                Object.keys(us_state_to_abbrev).map(async (state) => {
+                    const { data } = await client.query({ query, variables: { state } });
+                    return { 
+                        state, 
+                        value: data?.[resolverName]?.[fieldName] ?? 0 
+                    };
+                })
+            );
 
-    }
+            // find min/max across all states
+            const vals = results.map(r => r.value);
+            const min = Math.min(...vals);
+            const max = Math.max(...vals);
 
-    // Define custom styles and event handlers for the map
+            // build the config object USAMap needs
+            const config = {};
+            results.forEach(({ state, value }) => {
+                const abbrev = us_state_to_abbrev[state];
+                config[abbrev] = { fill: calculateFill(value, min, max) };
+            });
+
+            setStatesCustomConfig(config);
+            setLoading(false);
+        };
+
+        fetchAllStates();
+    }, [mode]); // re-fetch whenever mode switches and event handlers for the map
     
     const handleClick = (event) => {
         console.log(`Clicked on state: ${event.target.dataset.name}`);
