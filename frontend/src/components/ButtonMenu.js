@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 export default function ButtonMenu(props) {
 
@@ -12,17 +12,13 @@ export default function ButtonMenu(props) {
         { label: "Test", value: "test"},
     ];
 
-    
-    const handleChange = (value) => {
-        setMode(value);
-        console.log("Selected:", props.mode);
-    };
-
     return (
         <div style={styles.container}>
             {options.map((option) => (
-                <label
+                <button
                     key={option.value}
+                    type="button"
+                    onClick={() => setMode(option.value)}
                     style={{
                         ...styles.option,
                         backgroundColor:
@@ -31,19 +27,11 @@ export default function ButtonMenu(props) {
                                 : "#ecf0f1", // Unselected background color (light gray)
                         color:
                             props.mode === option.value ? "#ffffff" : "#7f8c8d", // Selected/unselected font color
-                        transition: "all 0.3s slide",
+                        transition: "all 0.3s ease",
                     }}
                 >
-                    <input
-                        type="radio"
-                        name="buttonMenu"
-                        value={option.value}
-                        checked={props.mode === option.value}
-                        onChange={() => handleChange(option.value)}
-                        style={styles.radioInput}
-                    />
                     {option.label}
-                </label>
+                </button>
             ))}
         </div>
     );
@@ -76,8 +64,6 @@ const styles = {
         fontWeight: "bold",
         textAlign: "center",
         border: "1px solid #bdc3c7", // Light gray border
-    },
-    radioInput: {
-        display: "none", // Hide the radio input visually
+        fontFamily: "inherit",
     },
 };

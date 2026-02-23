@@ -4,24 +4,57 @@ import ButtonMenu from './components/ButtonMenu';
 import ColorMap from './components/ColorMap';
 import TestHumidity from './components/TestComponent';
 
+import { useEffect, useState } from 'react';
 
-import {useState} from 'react'
+const MODE_TO_HASH = {
+  start: '#/welcome',
+  temperature: '#/temperature',
+  wind_speed: '#/wind-speed',
+  humidity: '#/humidity',
+  test: '#/test',
+};
+
+const HASH_TO_MODE = {
+  '#/welcome': 'start',
+  '#/temperature': 'temperature',
+  '#/wind-speed': 'wind_speed',
+  '#/humidity': 'humidity',
+  '#/test': 'test',
+};
+
+const getModeFromHash = () => HASH_TO_MODE[window.location.hash] || 'start';
 
 function App() {
+  // Starter, temperature, wind_speed, humidity, test
+  const [mode, setMode] = useState(getModeFromHash());
 
-  // Starter, temperature, wind_speed, humidity,
-  const [mode, setMode] = useState("start")
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.location.hash = MODE_TO_HASH.start;
+      return;
+    }
+
+    const onHashChange = () => setMode(getModeFromHash());
+    window.addEventListener('hashchange', onHashChange);
+
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const navigateMode = (nextMode) => {
+    const nextHash = MODE_TO_HASH[nextMode] || MODE_TO_HASH.start;
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
+    }
+  };
 
   const mapHandler = (event) => {
     console.log(event.target.dataset.name);
   };
 
-
-  let graphic; 
+  let graphic;
 
   console.log("mode: ", mode);
   if (mode === "start"){
-    <h1>Welcome to the weather visualizations by state!</h1>
     graphic = <img src={logo} className="App-logo" alt="logo" />;
   }else if (mode === "test"){
     graphic = <TestHumidity></TestHumidity>
@@ -34,7 +67,7 @@ function App() {
   return (
     <div className="App">
       <h1>
-        <ButtonMenu setMode={setMode} mode={mode}></ButtonMenu>
+        <ButtonMenu setMode={navigateMode} mode={mode}></ButtonMenu>
       </h1>
         <p>
           Put some map of some weather data here or something idk
