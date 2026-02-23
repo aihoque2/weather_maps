@@ -95,10 +95,11 @@ const ColorMap = (props) => {
         const fetchAllStates = async () => {
             setLoading(true);
             const { query, resolverName, fieldName } = getQueryConfig();
+            const stateEntries = Array.from(us_state_to_abbrev.entries());
 
             // fire all 50 state queries at the same time
             const results = await Promise.all(
-                Object.keys(us_state_to_abbrev).map(async (state) => {
+                stateEntries.map(async ([state]) => {
                     const { data } = await client.query({ query, variables: { state } });
                     return { 
                         state, 
@@ -115,7 +116,7 @@ const ColorMap = (props) => {
             // build the config object USAMap needs
             const config = {};
             results.forEach(({ state, value }) => {
-                const abbrev = us_state_to_abbrev[state];
+                const abbrev = us_state_to_abbrev.get(state);
                 config[abbrev] = { fill: calculateFill(value, min, max) };
             });
 
@@ -124,7 +125,7 @@ const ColorMap = (props) => {
         };
 
         fetchAllStates();
-    }, [mode]); // re-fetch whenever mode switches and event handlers for the map
+    }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
     const handleClick = (event) => {
         console.log(`Clicked on state: ${event.target.dataset.name}`);
