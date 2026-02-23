@@ -70,10 +70,12 @@ for state in tqdm(usa_major_cities.keys()):
         temp_f = raw_data['current']['temp_f']
         wind_mph = raw_data['current']['wind_mph']
         humid = raw_data['current']['humidity']
+        precip_in = raw_data['current']['precip_in']
         data.append({"city": city,  
                     "state": state,
                     "time": curr_time, 
-                    "wind_speed": wind_mph, 
+                    "wind_speed": wind_mph,
+                    "precipitation": precip_in, 
                     "temperature":temp_f,
                     "humidity": humid})
 
