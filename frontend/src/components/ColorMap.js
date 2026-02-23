@@ -1,9 +1,10 @@
 import React from "react";
 import USAMap from "react-usa-map";
+import { useQuery } from "@apollo/client";
 import "./ColorMap.css"
 import us_state_to_abbrev from "../extras/NameToAbbv.js"
 
-import { GET_HUMIDITY_BY_CITY_STATE, 
+import { GET_AVG_HUMIDITY_BY_STATE, 
     GET_AVG_TEMPERATURE_BY_STATE, 
     GET_AVG_WIND_SPEED_BY_STATE
         
@@ -43,7 +44,7 @@ const ColorMap = (props) => {
     
     let full_name = get_full_name(mode)
 
-    const queryData = () =>{
+    const queryData = (state_name) =>{
         /*
         query data based on the 'mode' prop
         depending on the mode, we will
@@ -52,16 +53,29 @@ const ColorMap = (props) => {
         */
 
         if (mode === "temperature") {
-            return 72;
-            
+
+        const {loading, error, data} = useQuery(GET_AVG_TEMPERATURE_BY_STATE, 
+                                                    {variables: {state: state_name}});
+        
+            if (loading) return <h1>LOADING....</h1>;
+            if (error) return <h1>Error! No Temperature data found: {error.message}</h1>;
+            if (!data?.getAvgTemperatureByState) return <h1>No data found for {state_name}</h1>;
+                
         } 
         else if (mode === "humidity") {
-            // Desert sand/gold brown (dry) → Green (humid)
-            return 67;
+        const {loading, error, data} = useQuery(GET_AVG_HUMIDITY_BY_STATE, 
+                                                    {variables: {state: state_name}});
+            
+            if (loading) return <h1>LOADING....</h1>;
+            if (error) return <h1>Error! No Humidity data found: {error.message}</h1>;
+            if (!data?.getAvgHumidityByState) return <h1>No Humidity data found for {state_name}</h1>;
         } 
         else if (mode === "wind_speed") {
-            // Light Gray (calm) → Orange (intense)
-            return 11.3;
+            const {loading, error, data} = useQuery(GET_AVG_WIND_SPEED_BY_STATE, 
+                                                    {variables: {state: state_name}});
+            if (loading) return <h1>LOADING....</h1>;
+            if (error) return <h1>Error! No Humidity data found: {error.message}</h1>;
+            if (!data?.getAvgWindSPeedByState) return <h1>No Humidity data found for {state_name}</h1>;
         }    
         return 0;
     }
@@ -104,10 +118,12 @@ const ColorMap = (props) => {
     const min = Math.min(...values);
     const max = Math.max(...values);
 
-    for (const [, stateAbbrev] of us_state_to_abbrev) {
-        const modeVal = queryData();
+    for (var entry in stateEntries){
+        var stateAbbrev = us_state_to_abbrev[entry];
+        const modeVal = queryData(entry);
         const fillVal = calculateFill(modeVal, min, max);
-        statesCustomConfig[stateAbbrev] = { fill: fillVal };
+        statesCustomConfig[stateAbbrev] = { fill: fillVal }
+
     }
 
     // Define custom styles and event handlers for the map
