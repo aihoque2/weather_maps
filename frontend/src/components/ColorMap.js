@@ -81,11 +81,11 @@ const ColorMap = (props) => {
         } 
         else if (mode === "humidity") {
             // Desert sand/gold brown (dry) → Green (humid)
-            return interpolateColor(ratio, 194, 154, 89, 0, 200, 83);
+            return interpolateColor(ratio, 218, 165, 32, 0, 200, 83);
         } 
         else if (mode === "wind_speed") {
             // Light Gray (calm) → Orange (intense)
-            return interpolateColor(ratio, 200, 200, 200, 255, 140, 0);
+            return interpolateColor(ratio, 255, 140, 0, 97, 23, 209);
         }
         return `#9f18dd`;
     }  
