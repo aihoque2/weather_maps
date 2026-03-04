@@ -10,6 +10,7 @@ import { GET_AVG_HUMIDITY_BY_STATE,
         
 } from "../db/queries.js"; // Import the query
 
+import Legend from "./Legend.js"
 
 const get_full_name = (mode) => {
 
@@ -46,6 +47,10 @@ const ColorMap = (props) => {
 
     const [statesCustomConfig, setStatesCustomConfig] = useState({});
     const [loading, setLoading] = useState(true);
+
+    // min/max values of the weather color wheel
+    const [minVal, setMinVal] = useState(0);  
+    const [maxVal, setMaxVal] = useState(0);  
 
     // pick the right query and field names based on mode
     const getQueryConfig = () => {
@@ -112,6 +117,9 @@ const ColorMap = (props) => {
             const vals = results.map(r => r.value);
             const min = Math.min(...vals);
             const max = Math.max(...vals);
+            
+            setMinVal(min);
+            setMaxVal(max);
 
             // build the config object USAMap needs
             const config = {};
@@ -136,6 +144,8 @@ const ColorMap = (props) => {
         <div style={{ textAlign: "center", margin: "20px" }}>
             <h1>{full_name}</h1>
             <USAMap customize={statesCustomConfig} onClick={handleClick}/>
+            <Legend mode={mode} min={minVal}
+            max={maxVal} interpolateColor={interpolateColor}></Legend>
         </div>
     );
 };

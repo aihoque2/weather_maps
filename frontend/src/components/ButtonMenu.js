@@ -41,14 +41,15 @@ const styles = {
     container: {
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
         gap: "10px", // Space between the options
-        marginTop: "20px",
         position:"fixed",
         top: 0, // pins to top
         left: 0,
         right: 0, // full width
+        height: "70px",
         zIndex: 1000, // stays above everything
-        //backgroundColor: "#58c0d3", // so content doesn't bleed through
+        backgroundColor: "#8cd8e2", // so content doesn't bleed through
         padding: "10px 0",
         boxShadow: "0 2px 5px rgba(0,0,0,0.1)", // subtle shadow so it feels lifted
     },
@@ -57,7 +58,7 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         width: "100px",
-        height: "40px",
+        height: "50%",
         borderRadius: "8px",
         cursor: "pointer",
         fontSize: "14px",

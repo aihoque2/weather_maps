@@ -55,7 +55,12 @@ function App() {
 
   console.log("mode: ", mode);
   if (mode === "start"){
-    graphic = <img src={logo} className="App-logo" alt="logo" />;
+    // Welcome screen
+    
+    graphic = (<>
+    <p>Put some Weather data on this site or something idk</p>
+    <img src={logo} className="App-logo" alt="logo" />
+    </>);
   }else if (mode === "test"){
     graphic = <TestHumidity></TestHumidity>
   } 
@@ -69,9 +74,6 @@ function App() {
       <h1>
         <ButtonMenu setMode={navigateMode} mode={mode}></ButtonMenu>
       </h1>
-        <p>
-          Put some map of some weather data here or something idk
-        </p>
 
         <div>
           {graphic}
