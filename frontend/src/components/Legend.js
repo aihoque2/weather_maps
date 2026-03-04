@@ -6,8 +6,19 @@ const Legend = ({ mode, min, max, interpolateColor }) => {
     const steps = 10;
     const gradientStops = Array.from({ length: steps }, (_, i) => {
         const ratio = i / (steps - 1);
-        return interpolateColor(ratio, mode);
-    });
+        if (mode === "temperature") {
+            // Blue (cold) → Red (hot)
+            return interpolateColor(ratio, 0, 0, 255, 255, 0, 0);
+        } 
+        else if (mode === "humidity") {
+            // Desert sand/gold brown (dry) → Green (humid)
+            return interpolateColor(ratio, 218, 165, 32, 0, 200, 83);
+        } 
+        else if (mode === "wind_speed") {
+            // Light Gray (calm) → Orange (intense)
+            return interpolateColor(ratio, 255, 140, 0, 97, 23, 209);
+        }
+        return `#9f18dd`;    });
 
     const gradient = `linear-gradient(to right, ${gradientStops.join(", ")})`;
 
