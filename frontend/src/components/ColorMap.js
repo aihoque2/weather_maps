@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import USAMap from "react-usa-map";
+import USStateToolTip from "./USStateToolTip.js";
 import { useApolloClient } from "@apollo/client";
 import "./ColorMap.css"
 import us_state_to_abbrev from "../extras/NameToAbbv.js"
@@ -11,7 +12,7 @@ import { GET_AVG_HUMIDITY_BY_STATE,
 } from "../db/queries.js"; // Import the query
 
 import Legend from "./Legend.js"
-
+     
 const get_full_name = (mode) => {
 
         /*
@@ -46,6 +47,9 @@ const ColorMap = (props) => {
     let full_name = get_full_name(mode)
 
     const [statesCustomConfig, setStatesCustomConfig] = useState({});
+    const [toolTipOpened, SetToolTipOpened] = useState(true);
+    const [selectedUSState, setSelectedUSState] = useState('')
+    const [clickLoc, setClickLoc] = useState({}) // state location: x and y
     const [loading, setLoading] = useState(true);
 
     // min/max values of the weather color wheel
@@ -136,6 +140,7 @@ const ColorMap = (props) => {
     }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
     const handleClick = (event) => {
+        setSelectedUSState(event.target.dataset.name);
         console.log(`Clicked on state: ${event.target.dataset.name}`);
     };
 
@@ -146,6 +151,7 @@ const ColorMap = (props) => {
             <USAMap customize={statesCustomConfig} onClick={handleClick}/>
             <Legend mode={mode} min={minVal}
             max={maxVal} interpolateColor={interpolateColor}></Legend>
+            <USStateToolTip ></USStateToolTip>
         </div>
     );
 };

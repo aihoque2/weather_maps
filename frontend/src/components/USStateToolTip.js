@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
 
 
-const USStateToolTip = ({state, mode, data_vals, location}) =>{
+const USStateToolTip = ({us_state, mode, data_vals, location}) =>{
 
-    const Opened, setOpened = useState(false);
-
-    if (Opened){
-        let tooltip = (<div>
-        </div>);
-    }
-    else{
-        let tooltip = null;
+    let title= ""
+    if (mode === "temperature") {
+        title = "Temperature for ".concat(us_state);
     }
 
-
+    if (mode === "humidity") {
+        title = "Humidity for ".concat(us_state)
+    }
+    if (mode === "wind_speed"){
+        title = "Humidity for ".concat(us_state)
+    }
 
     return(
         <div>
-            {tooltip}
+            {}
         </div>
     )
 }
+
+export default USStateToolTip;
