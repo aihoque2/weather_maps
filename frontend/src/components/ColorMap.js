@@ -112,6 +112,16 @@ const ColorMap = (props) => {
 
     // fetch data from the given mode
     useEffect(() => {
+        
+        /*
+        can put the null-setting lines after fetchAllStates()
+        to signify closing, but better up here before querying 50 
+        things
+        */
+        setSelectedUSState(null);
+        setCitiesData(null);
+        
+        /*get our averages, and fill the map*/
         const fetchAllStates = async () => {
             setLoading(true);
             const { query, resolverName, fieldName } = getQueryConfig();
@@ -152,8 +162,8 @@ const ColorMap = (props) => {
             setStatesCustomConfig(config);
             setLoading(false);
         };
-
         fetchAllStates();
+
     }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
 
@@ -162,11 +172,7 @@ const ColorMap = (props) => {
         const stateName = event.target.dataset.name;  // state abbreviation
         const fullStateName = us_state_to_name[stateName]; // convert abbrev to full name
 
-        console.log("stateName (abbrev):", stateName);
-        console.log("fullStateName:", fullStateName);
-        console.log("stateAverages keys sample:", Object.keys(stateAverages));
-        console.log("state_val lookup:", stateAverages[fullStateName]);
-        
+
         if (selectedUSState && stateName === selectedUSState.name){
             setSelectedUSState(null);
             setCitiesData(null);
