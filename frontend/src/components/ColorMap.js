@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import USAMap from "react-usa-map";
 import USStateToolTip from "./USStateToolTip.js";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useLazyQuery } from "@apollo/client";
 import "./ColorMap.css"
 import us_state_to_abbrev from "../extras/NameToAbbv.js"
+import us_state_to_name from "../extras/StateToName.js"
+import cities_data from "../extras/Cities.js";
 
 import { GET_AVG_HUMIDITY_BY_STATE, 
     GET_AVG_TEMPERATURE_BY_STATE, 
-    GET_AVG_WIND_SPEED_BY_STATE
-        
+    GET_AVG_WIND_SPEED_BY_STATE,
+    GET_HUMIDITY_BY_CITY_STATE,
+    GET_TEMPERATURE_BY_CITY_STATE,
+    GET_WIND_SPEED_BY_CITY_STATE
 } from "../db/queries.js"; // Import the query
 
 import Legend from "./Legend.js"
@@ -49,8 +53,10 @@ const ColorMap = (props) => {
     const [statesCustomConfig, setStatesCustomConfig] = useState({});
     const [toolTipOpened, SetToolTipOpened] = useState(true);
     const [selectedUSState, setSelectedUSState] = useState(null);
+    const [citiesData, setCitiesData] = useState(null);
     const [clickLoc, setClickLoc] = useState({}); // state location: x and y
     const [loading, setLoading] = useState(true);
+    const [stateAverages, setStateAverages] = useState({});
 
     // min/max values of the weather color wheel
     const [minVal, setMinVal] = useState(0);  
@@ -74,6 +80,10 @@ const ColorMap = (props) => {
             fieldName: "wind_speed" 
         };
     }
+
+    const [fetchTemperature, { data: tempData }] = useLazyQuery(GET_TEMPERATURE_BY_CITY_STATE);
+    const [fetchHumidity, { data: humidData }] = useLazyQuery(GET_HUMIDITY_BY_CITY_STATE);
+    const [fetchWindSpeed, { data: windData }] = useLazyQuery(GET_WIND_SPEED_BY_CITY_STATE);
 
     const calculateFill = (value, min, max) =>
     {
@@ -100,6 +110,7 @@ const ColorMap = (props) => {
     }  
 
 
+    // fetch data from the given mode
     useEffect(() => {
         const fetchAllStates = async () => {
             setLoading(true);
@@ -116,6 +127,12 @@ const ColorMap = (props) => {
                     };
                 })
             );
+
+            const averages = {};
+            results.forEach(({ state, value }) => {
+                averages[state] = value;  // state is full name here
+            });
+            setStateAverages(averages);
 
             // find min/max across all states
             const vals = results.map(r => r.value);
@@ -139,20 +156,63 @@ const ColorMap = (props) => {
         fetchAllStates();
     }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
-    const handleClick = (event) => {
-        if (selectedUSState && event.target.dataset.name === selectedUSState.name){
+
+    const handleClick = async (event) => {
+        
+        const stateName = event.target.dataset.name;  // state abbreviation
+        const fullStateName = us_state_to_name[stateName]; // convert abbrev to full name
+
+        console.log("stateName (abbrev):", stateName);
+        console.log("fullStateName:", fullStateName);
+        console.log("stateAverages keys sample:", Object.keys(stateAverages));
+        console.log("state_val lookup:", stateAverages[fullStateName]);
+        
+        if (selectedUSState && stateName === selectedUSState.name){
             setSelectedUSState(null);
+            setCitiesData(null);
+            return;
         }
-        else {
-            setSelectedUSState({
-                name: event.target.dataset.name,
-                x: event.clientX,
-                y: event.clientY,
-            });}
+
+    
+        setSelectedUSState({
+            name: event.target.dataset.name,
+            x: event.clientX,
+            y: event.clientY,
+        });
+        
+
+        // get cities for this state from cities.yaml data
+        const stateCities = cities_data[us_state_to_name.get(stateName)] || [];
+
+        // quick Promise run to fetch
+        // weather for each city in parallel
+        const results = await Promise.all(
+            stateCities.map(async (city) => {
+                const { data } = await client.query({
+                    query: mode === "temperature" ? GET_TEMPERATURE_BY_CITY_STATE
+                        : mode === "humidity"    ? GET_HUMIDITY_BY_CITY_STATE
+                        : GET_WIND_SPEED_BY_CITY_STATE,
+                    variables: { city, state: us_state_to_name.get(stateName) }
+                });
+
+                const key = mode === "temperature" ? "getMostRecentTemperatureByCity"
+                        : mode === "humidity"    ? "getMostRecentHumidityByCity"
+                        : "getMostRecentWindSpeedByCity";
+
+                const field = mode === "temperature" ? "temperature"
+                            : mode === "humidity"    ? "humidity"
+                            : "wind_speed";
+
+                return {
+                    city,
+                    value: data?.[key]?.[field] ?? "N/A"
+                };
+            })
+        );
+
+        setCitiesData(results);
 
     };
-    
-    const closeFunc = () =>{}; //when closing USStateTooltip
 
 
     return (
@@ -165,8 +225,10 @@ const ColorMap = (props) => {
                 <USStateToolTip 
                     us_state={selectedUSState.name}
                     mode={mode}
+                    city_vals={citiesData}
+                    state_val = {stateAverages[us_state_to_name.get(selectedUSState.name)]}
                     loc={{ x: selectedUSState.x, y: selectedUSState.y }}
-                    onClose={() => setSelectedUSState(null)}
+                    onClose={() => {setSelectedUSState(null); setCitiesData(null);}}
                 />
             )}
         </div>
