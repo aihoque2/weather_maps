@@ -30,8 +30,8 @@ const USStateToolTip = ({ us_state, mode, data_vals, onClose, loc }) => {
             <button onClick={onClose} style={{
                 position: "absolute",
                 top: "8px",
-                left: isRightSide ? "8px" : "auto",
-                right: isRightSide ? "auto" : "8px",
+                left: isRightSide ? "auto" : "8px",
+                right: isRightSide ? "8px" : "auto",
                 background: "none",
                 border: "none",
                 color: "#ffffff",
