@@ -140,11 +140,15 @@ const ColorMap = (props) => {
     }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
     const handleClick = (event) => {
-    setSelectedUSState({
-        name: event.target.dataset.name,
-        x: event.clientX,
-        y: event.clientY,
-    });
+        if (selectedUSState && event.target.dataset.name === selectedUSState.name){
+            setSelectedUSState(null);
+        }
+        else {
+            setSelectedUSState({
+                name: event.target.dataset.name,
+                x: event.clientX,
+                y: event.clientY,
+            });}
 
     };
     

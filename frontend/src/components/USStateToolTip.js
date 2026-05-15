@@ -1,43 +1,49 @@
 import React, { useState, useEffect } from "react";
 
+const USStateToolTip = ({ us_state, mode, data_vals, onClose, loc }) => {
+    if (!loc) return null;
 
-const USStateToolTip = ({us_state, mode, data_vals, onClose, loc}) =>{
-    if (!loc) return null;  // render nothing until a state is clicked
+    const isRightSide = loc.x > window.innerWidth / 2;
 
-    var x = loc.x;
-    var y = loc.y;
-    let title= ""
-    if (mode === "temperature") {
-        title = "Temperature for ".concat(us_state);
-    }
+    let title = "";
+    if (mode === "temperature") title = `Temperature for ${us_state}`;
+    else if (mode === "humidity") title = `Humidity for ${us_state}`;
+    else if (mode === "wind_speed") title = `Wind Speed for ${us_state}`;
 
-    if (mode === "humidity") {
-        title = "Humidity for ".concat(us_state)
-    }
-    if (mode === "wind_speed"){
-        title = "Humidity for ".concat(us_state)
-    }
-
-    return(
+    return (
         <div style={{
             position: "fixed",
             top: loc.y,
-            left: loc.x,
-            backgroundColor: "white",
-            border: "1px solid #ccc",
+            // if right side, anchor tooltip to the left of click instead
+            left: isRightSide ? "auto" : loc.x,
+            right: isRightSide ? window.innerWidth - loc.x : "auto",
+            backgroundColor: "#1a1a2e",
+            border: "1px solid #14e2af",
             borderRadius: "8px",
-            padding: "12px",
+            padding: "28px 16px 16px 16px",
             zIndex: 999,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            minWidth: "180px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
+            minWidth: "200px",
             textAlign: "left",
         }}>
-            <h3 style={{ margin: "0 0 8px 0" }}>{title}</h3>
-            <p style={{ margin: "0 0 8px 0" }}>city data goes here</p>
-            {/* clicking X sets selectedUSState to null, hiding tooltip */}
-            <button onClick={onClose}>✕ close</button>
-        </div>
-    )
-}
+            {/* X flips to left or right depending on screen side */}
+            <button onClick={onClose} style={{
+                position: "absolute",
+                top: "8px",
+                left: isRightSide ? "8px" : "auto",
+                right: isRightSide ? "auto" : "8px",
+                background: "none",
+                border: "none",
+                color: "#ffffff",
+                fontSize: "16px",
+                cursor: "pointer",
+                lineHeight: 1,
+                padding: "0",
+            }}>✕</button>
 
+            <h3 style={{ margin: "0 0 8px 0", color: "#ffffff" }}>{title}</h3>
+            <p style={{ margin: "0", color: "#cccccc" }}>city data goes here</p>
+        </div>
+    );
+}
 export default USStateToolTip;
