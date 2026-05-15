@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 
 const USStateToolTip = ({us_state, mode, data_vals, onClose, loc}) =>{
+    if (!loc) return null;  // render nothing until a state is clicked
+
     var x = loc.x;
     var y = loc.y;
     let title= ""

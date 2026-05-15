@@ -48,8 +48,8 @@ const ColorMap = (props) => {
 
     const [statesCustomConfig, setStatesCustomConfig] = useState({});
     const [toolTipOpened, SetToolTipOpened] = useState(true);
-    const [selectedUSState, setSelectedUSState] = useState('')
-    const [clickLoc, setClickLoc] = useState({}) // state location: x and y
+    const [selectedUSState, setSelectedUSState] = useState(null);
+    const [clickLoc, setClickLoc] = useState({}); // state location: x and y
     const [loading, setLoading] = useState(true);
 
     // min/max values of the weather color wheel
@@ -140,9 +140,15 @@ const ColorMap = (props) => {
     }, [mode, client]); // re-fetch whenever mode switches and event handlers for the map
     
     const handleClick = (event) => {
-        setSelectedUSState(event.target.dataset.name);
-        console.log(`Clicked on state: ${event.target.dataset.name}`);
+    setSelectedUSState({
+        name: event.target.dataset.name,
+        x: event.clientX,
+        y: event.clientY,
+    });
+
     };
+    
+    const closeFunc = () =>{}; //when closing USStateTooltip
 
 
     return (
@@ -151,7 +157,14 @@ const ColorMap = (props) => {
             <USAMap customize={statesCustomConfig} onClick={handleClick}/>
             <Legend mode={mode} min={minVal}
             max={maxVal} interpolateColor={interpolateColor}></Legend>
-            <USStateToolTip ></USStateToolTip>
+            {selectedUSState && (
+                <USStateToolTip 
+                    us_state={selectedUSState.name}
+                    mode={mode}
+                    loc={{ x: selectedUSState.x, y: selectedUSState.y }}
+                    onClose={() => setSelectedUSState(null)}
+                />
+            )}
         </div>
     );
 };
