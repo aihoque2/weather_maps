@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {Weather} = require("./models/Weather.js"); // Adjust this path to point to your Weather model
+const {WeatherCity} = require("./models/Weather.js"); // Adjust this path to point to your Weather model
 const auth = require("./auth.json");
 
 const username = auth["mongodb_user"];

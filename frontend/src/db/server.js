@@ -2,7 +2,7 @@ const auth = require("./auth.json")
 const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
-const {Weather} = require("./models/Weather.js"); // module.exports
+const {WeatherCity} = require("./models/Weather.js"); // module.exports
 const {mongoose} = require("mongoose");
 
 /*
@@ -97,7 +97,7 @@ const TemperatureResolvers = {
     Query:{
         getMostRecentTemperatureByCity: async (_,{city, state}) =>{
             try{
-                const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+                const result = await WeatherCity.findOne({ city, state }).sort({ time: -1 }).exec();
                 console.log("Query result:", result);
                 return result;
             }
@@ -109,7 +109,7 @@ const TemperatureResolvers = {
         },
         getAvgTemperatureByState: async (_, {state}) => {
             try {
-                const result = await Weather.aggregate([
+                const result = await WeatherCity.aggregate([
                     { $match: { state } },
                     { $sort: { time: -1 } },
                     { $group: {
@@ -135,7 +135,7 @@ const HumidityResolvers = {
     Query: {
       getMostRecentHumidityByCity: async (_,{city, state}) => {
         try{
-            const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+            const result = await WeatherCity.findOne({ city, state }).sort({ time: -1 }).exec();
             console.log("Query result:", result);
             return result;
         }
@@ -147,7 +147,7 @@ const HumidityResolvers = {
       },
       getAvgHumidityByState: async (_, {state}) => {
             try {
-                const result = await Weather.aggregate([
+                const result = await WeatherCity.aggregate([
                     { $match: { state } },
                     { $sort: { time: -1 } },
                     { $group: {
@@ -173,7 +173,7 @@ const WindSpeedResolvers = {
     Query: {
       getMostRecentWindSpeedByCity: async (_,{city, state}) => {
         try{
-            const result = await Weather.findOne({ city, state }).sort({ time: -1 }).exec();
+            const result = await WeatherCity.findOne({ city, state }).sort({ time: -1 }).exec();
             console.log("Query result:", result);
             return result;
         }
@@ -185,7 +185,7 @@ const WindSpeedResolvers = {
       },
         getAvgWindSpeedByState: async (_, {state}) => {
             try {
-                const result = await Weather.aggregate([
+                const result = await WeatherCity.aggregate([
                     { $match: { state } },
                     { $sort: { time: -1 } },
                     { $group: {
