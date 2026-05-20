@@ -89,5 +89,5 @@ df.write \
 .mode("overwrite")\
 .option("uri", mongo_uri)\
 .option("database", "weather_data")\
-.option("collection", "weather")\
+.option("collection", "weather_city")\
 .save()
