@@ -37,7 +37,7 @@ try:
         db_passwd = config['mongodb_password']
 
 except FileNotFoundError:
-    print("'%s' file not found:" % filename)
+    print("'%s' file not found:" % api_file)
 
 
 mongo_uri = f"mongodb+srv://{mongo_usr}:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -59,7 +59,6 @@ spark = SparkSession \
     .getOrCreate()
 
 
-# uncomment this when you figure out spark
 
 data = []
 curr_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
