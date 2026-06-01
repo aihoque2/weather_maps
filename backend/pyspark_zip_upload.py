@@ -18,6 +18,8 @@ base_url = "http://api.weatherapi.com/v1/current.json"
 db_passwd = ""
 mongo_usr = ""
 
+zip_spreadsheet_url = "https://postalpro.usps.com/mnt/glusterfs/2026-05/ZIP_Locale_Detail.xls"
+
 
 def get_data_from_zip(zip: str):
     """
