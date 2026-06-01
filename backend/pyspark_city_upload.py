@@ -7,8 +7,9 @@ import datetime
 from tqdm import tqdm
 
 """
-Pipeline for requesting data then 
-uploading the data to a mongoDB database
+Pipeline for requesting weather data 
+based on cities then uploading the data 
+to a mongoDB database
 """
 
 api_key = ""
@@ -41,6 +42,9 @@ except FileNotFoundError:
 
 
 mongo_uri = f"mongodb+srv://{mongo_usr}:{db_passwd}@cluster0.g81bj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+
+# City Data Upload
 
 USA_Major_Cities = {}
 try:
@@ -90,3 +94,6 @@ df.write \
 .option("database", "weather_data")\
 .option("collection", "weather_city")\
 .save()
+
+
+# zip code data processing
