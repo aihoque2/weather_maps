@@ -3,6 +3,7 @@ import pandas as pd # no spark here bc pandas is enuf
 import json
 from io import BytesIO
 
+# using USPS excel sheet for these values
 zip_spreadsheet_url = "https://postalpro.usps.com/mnt/glusterfs/2026-05/ZIP_Locale_Detail.xls"
 
 def gather_zips():

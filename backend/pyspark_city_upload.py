@@ -55,6 +55,7 @@ except FileNotFoundError:
 
 usa_major_cities = USA_Major_Cities['USA_Major_Cities']
 
+# create the SparkSession
 spark = SparkSession \
     .builder \
     .appName("Spark SQL weather data transform")\
@@ -94,6 +95,3 @@ df.write \
 .option("database", "weather_data")\
 .option("collection", "weather_city")\
 .save()
-
-
-# zip code data processing
