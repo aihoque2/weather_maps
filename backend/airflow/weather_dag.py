@@ -16,11 +16,16 @@ with DAG(
     start_date=datetime(2026, 1, 1),
     catchup=False,  # don't backfill missed runs
 ) as dag:
-
-    run_pyspark = BashOperator(
-        task_id='run_pyspark_upload',
-        # this is our scheduler to run
-        bash_command='cd ~/Projects/data-projects/weather_maps/backend && python pyspark_upload.py',
+    
+    run_city_upload = BashOperator(
+        task_id='run_city_upload',
+        bash_command='cd ~/Projects/data-projects/weather_maps/backend && python3 pyspark_city_upload.py',
     )
 
-    run_pyspark
+    # separate the tasks for failure isolation
+    run_zip_upload = BashOperator(
+        task_id='run_zip_upload',
+        bash_command='cd ~/Projects/data-projects/weather_maps/backend && python3 pyspark_zip_upload.py',
+    )
+
+    run_city_upload >> run_zip_upload
