@@ -4,7 +4,9 @@ import ButtonMenu from './components/ButtonMenu';
 import CityColorMap from './components/CityColorMap';
 import TestHumidity from './components/TestComponent';
 
+import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from 'react';
+import LeafLetMap from './components/LeafletMap';
 
 const MODE_TO_HASH = {
   start: '#/welcome',
@@ -12,6 +14,7 @@ const MODE_TO_HASH = {
   wind_speed: '#/wind-speed',
   humidity: '#/humidity',
   test: '#/test',
+  leaflet: '#/leaflet',
 };
 
 const HASH_TO_MODE = {
@@ -20,6 +23,7 @@ const HASH_TO_MODE = {
   '#/wind-speed': 'wind_speed',
   '#/humidity': 'humidity',
   '#/test': 'test',
+  '#/leaflet': 'leaflet',
 };
 
 const getModeFromHash = () => HASH_TO_MODE[window.location.hash] || 'start';
@@ -64,6 +68,9 @@ function App() {
   }else if (mode === "test"){
     graphic = <TestHumidity></TestHumidity>
   } 
+  else if (mode == "leaflet"){
+    graphic = <LeafLetMap></LeafLetMap>
+  }
   else{
     graphic = <CityColorMap mode={mode} onClick={mapHandler}/>;
 

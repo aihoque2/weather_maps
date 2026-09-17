@@ -6,6 +6,8 @@ from pyspark.sql import SparkSession
 from tqdm import tqdm
 
 """
+pyspark_zip_upload.py
+
 gather data from weatherAPI
 using zip codes and upload
 to mongoDB
@@ -63,7 +65,12 @@ def fetch_weather(zip_state):
         params = {"key": api_key_bc.value, "q": zip_code}
         response = requests.get("http://api.weatherapi.com/v1/current.json", params)
         if response.status_code != 200:
-            return None
+            print(
+                f"FAILED {zip_code}: "
+                f"HTTP {response.status_code} - {response.text}"
+            )
+            return None        
+
         data = response.json()
         return {
             "zip": zip_code,
@@ -77,13 +84,18 @@ def fetch_weather(zip_state):
         print(f"failed for {zip_code}: {e}")
         return None
 
+# # Test cocde to see if API is LIVE or Disabled
+# print(fetch_weather(("15213", "Pennsylvania")))
+
 # parallelize and fetch
 zips_rdd = sc.parallelize(zip_state_pairs, numSlices=60)
-results_rdd = zips_rdd.map(fetch_weather).filter(lambda x: x is not None)
+results_rdd = zips_rdd.map(fetch_weather).filter(lambda x: x is not None).cache()
 
 # convert to DataFrame and write to MongoDB
 df = results_rdd.toDF()
 df.show(5)
+upload_count = df.count()
+
 
 df.write \
     .format("com.mongodb.spark.sql.DefaultSource") \
@@ -93,4 +105,5 @@ df.write \
     .option("collection", "weather_zip") \
     .save()
 
+print("Uploaded {} records".format(upload_count))
 print("zip code upload done.")

@@ -10,6 +10,7 @@ export default function ButtonMenu(props) {
         { label: "Wind Speed", value: "wind_speed" },
         { label: "Humidity", value: "humidity" },
         { label: "Test", value: "test"},
+        { label: "Leaflet Map", value:"leaflet"},
     ];
 
     return (
