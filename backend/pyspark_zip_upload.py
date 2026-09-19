@@ -92,7 +92,7 @@ zips_rdd = sc.parallelize(zip_state_pairs, numSlices=60)
 results_rdd = zips_rdd.map(fetch_weather).filter(lambda x: x is not None).cache()
 
 # convert to DataFrame and write to MongoDB
-df = results_rdd.toDF()
+df = results_rdd.toDF().cache()
 df.show(5)
 upload_count = df.count()
 

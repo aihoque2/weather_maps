@@ -1,27 +1,53 @@
-import React, { useState, useEffect } from "react";
-
-import { MapContainer, TileLayer, GeoJSON} from "react-leaflet";
-
-import USStateToolTip from "./USStateToolTip.js";
-import { useApolloClient, useLazyQuery } from "@apollo/client";
-import "./CityColorMap.css"
-import us_state_to_abbrev from "../extras/NameToAbbv.js"
-import us_state_to_name from "../extras/StateToName.js"
-import cities_data from "../extras/Cities.js";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import statesData from "../extras/us-states-polygons.js";
 import "leaflet/dist/leaflet.css";
 
+const stateStyle = {
+  color: "black",
+  weight: 3,
+  fillColor: "red",
+  fillOpacity: 0.5,
+};
 
-export default function LeafLetMap(){
+function onEachState(feature, layer) {
+  layer.bindTooltip(feature.properties.name);
+}
 
-return (<MapContainer
+export default function LeafLetMap() {
+  return (
+    <MapContainer
       center={[39.8, -98.6]}
       zoom={4}
-      style={{ height: "700px", width: "100%" }}>
-        <TileLayer
+      style={{
+        height: "700px",
+        width: "100%",
+      }}
+    >
+      {/* actual geographic map */}
+      <TileLayer
         attribution="&copy; OpenStreetMap contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png">
-        </TileLayer>
-        
-        </MapContainer>);
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
 
+      {/* YOUR STATE POLYGONS */}
+      <GeoJSON
+        data={statesData}
+        style={stateStyle}
+        onEachFeature={onEachState}
+      />
+    </MapContainer>
+  );
 }
+
+/* LeafLetMap.css */
+
+// .map-wrapper {
+//   width: 100%;
+//   height: 700px;
+// }
+
+// .leaflet-map {
+//   width: 100%;
+//   height: 100%;
+//   z-index: 0;
+// }

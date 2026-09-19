@@ -4,7 +4,11 @@ import { gql } from "@apollo/client";
 see: https://www.apollographql.com/docs/react/data/queries
 */
 
-// Humidity
+/*
+Queries by city-state pair
+*/
+
+// Humidity 
 export const GET_HUMIDITY_BY_CITY_STATE = gql`
   query GetMostRecentHumidity($city: String!, $state: String!) {
     getMostRecentHumidityByCity(city: $city, state: $state) {
@@ -66,3 +70,46 @@ export const GET_AVG_WIND_SPEED_BY_STATE = gql`
     }
   }
 `;
+
+
+/*
+Queries by zip code
+*/
+
+
+// Humidity 
+export const GET_HUMIDITY_BY_ZIP_STATE = gql`
+  query GetMostRecentHumidity($zip: String!, $state: String!) {
+    getMostRecentHumidityByCity(city: $zip, state: $zip) {
+      zip
+      state
+      humidity
+      time
+    }
+  }
+`;
+
+// Temperature
+export const GET_TEMPERATURE_BY_ZIP_STATE = gql`
+  query GetMostRecentTemperature($zip: String!, $state: String!) {
+    getMostRecentTemperatureByCity(zip: $zip, state: $state) {
+      city
+      state
+      temperature
+      time
+    }
+  }
+`;
+
+// Wind Speed
+export const GET_WIND_SPEED_BY_ZIP_STATE = gql`
+  query GetMostRecentWindSpeed($zip: String!, $state: String!) {
+    getMostRecentTemperatureByZip(zip: $zip:, state: $state) {
+      city
+      state
+      temperature
+      time
+    }
+  }
+`;
+

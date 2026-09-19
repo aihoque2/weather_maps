@@ -5,7 +5,7 @@ credit to some dude from
 D3.js
 */
 
-var statesData = {
+const statesData = {
     "type": "FeatureCollection",
     "features": [{
         "type": "Feature",
@@ -529,3 +529,5 @@ var statesData = {
         }
     }]
 };
+
+export default statesData;

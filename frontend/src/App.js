@@ -3,9 +3,8 @@ import './App.css';
 import ButtonMenu from './components/ButtonMenu';
 import CityColorMap from './components/CityColorMap';
 import TestHumidity from './components/TestComponent';
-
-import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from 'react';
+
 import LeafLetMap from './components/LeafletMap';
 
 const MODE_TO_HASH = {
