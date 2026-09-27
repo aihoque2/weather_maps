@@ -77,7 +77,7 @@ Queries by zip code
 */
 
 
-// Humidity 
+// Humidity zip
 export const GET_HUMIDITY_BY_ZIP_STATE = gql`
   query GetMostRecentHumidity($zip: String!, $state: String!) {
     getMostRecentHumidityByCity(city: $zip, state: $zip) {
@@ -89,7 +89,7 @@ export const GET_HUMIDITY_BY_ZIP_STATE = gql`
   }
 `;
 
-// Temperature
+// Temperature zip
 export const GET_TEMPERATURE_BY_ZIP_STATE = gql`
   query GetMostRecentTemperature($zip: String!, $state: String!) {
     getMostRecentTemperatureByCity(zip: $zip, state: $state) {
@@ -101,13 +101,13 @@ export const GET_TEMPERATURE_BY_ZIP_STATE = gql`
   }
 `;
 
-// Wind Speed
+// Wind Speed zip
 export const GET_WIND_SPEED_BY_ZIP_STATE = gql`
   query GetMostRecentWindSpeed($zip: String!, $state: String!) {
-    getMostRecentTemperatureByZip(zip: $zip:, state: $state) {
+    getMostRecentWindSpeedByZip(zip: $zip:, state: $state) {
       city
       state
-      temperature
+      wind_speed
       time
     }
   }
