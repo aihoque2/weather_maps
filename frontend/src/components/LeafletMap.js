@@ -13,7 +13,7 @@ function onEachState(feature, layer) {
   layer.bindTooltip(feature.properties.name);
 }
 
-export default function LeafLetMap() {
+export default function LeafletMap() {
   return (
     <MapContainer
       center={[39.8, -98.6]}
@@ -39,7 +39,7 @@ export default function LeafLetMap() {
   );
 }
 
-/* LeafLetMap.css */
+/* LeafletMap.css */
 
 // .map-wrapper {
 //   width: 100%;

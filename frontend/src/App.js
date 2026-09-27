@@ -5,7 +5,7 @@ import CityColorMap from './components/CityColorMap';
 import TestHumidity from './components/TestComponent';
 import { useEffect, useState } from 'react';
 
-import LeafLetMap from './components/LeafletMap';
+import LeafletMap from './components/LeafletMap';
 
 const MODE_TO_HASH = {
   start: '#/welcome',
@@ -68,7 +68,7 @@ function App() {
     graphic = <TestHumidity></TestHumidity>
   } 
   else if (mode == "leaflet"){
-    graphic = <LeafLetMap></LeafLetMap>
+    graphic = <LeafletMap></LeafletMap>
   }
   else{
     graphic = <CityColorMap mode={mode} onClick={mapHandler}/>;

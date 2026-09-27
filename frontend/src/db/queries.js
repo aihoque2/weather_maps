@@ -104,7 +104,7 @@ export const GET_TEMPERATURE_BY_ZIP_STATE = gql`
 // Wind Speed zip
 export const GET_WIND_SPEED_BY_ZIP_STATE = gql`
   query GetMostRecentWindSpeed($zip: String!, $state: String!) {
-    getMostRecentWindSpeedByZip(zip: $zip:, state: $state) {
+    getMostRecentWindSpeedByZip(zip: $zip, state: $state) {
       city
       state
       wind_speed
