@@ -81,9 +81,9 @@ function App() {
         <ButtonMenu setMode={navigateMode} mode={mode}></ButtonMenu>
       </h1>
 
-        <div>
+        <main style={{ width: "70%" }}>
           {graphic}
-        </div>
+        </main>
 
         <a
           className="App-link"

@@ -78,6 +78,8 @@ def fetch_weather(zip_state):
             "temperature": data["current"]["temp_f"],
             "humidity": data["current"]["humidity"],
             "wind_speed": data["current"]["wind_mph"],
+            "lat": data['location']['lat'],
+            "lon": data['location']['lon'],
             "time": datetime.datetime.now(datetime.timezone.utc).isoformat()
         }
     except Exception as e:
