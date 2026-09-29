@@ -194,28 +194,36 @@ const CityColorMap = (props) => {
         // weather for each city in parallel
         const results = await Promise.all(
             stateCities.map(async (city) => {
+                const query =
+                    mode === "temperature"
+                        ? GET_TEMPERATURE_BY_CITY_STATE
+                        : mode === "humidity"
+                        ? GET_HUMIDITY_BY_CITY_STATE
+                        : GET_WIND_SPEED_BY_CITY_STATE;
+
                 const { data } = await client.query({
-                    query: mode === "temperature" ? GET_TEMPERATURE_BY_CITY_STATE
-                        : mode === "humidity"    ? GET_HUMIDITY_BY_CITY_STATE
-                        : GET_WIND_SPEED_BY_CITY_STATE,
-                    variables: { city, state: us_state_to_name.get(stateName) }
+                    query,
+                    variables: {
+                        city,
+                        state: us_state_to_name.get(stateName)
+                    }
                 });
 
-                const key = mode === "temperature" ? "getMostRecentTemperatureByCity"
-                        : mode === "humidity"    ? "getMostRecentHumidityByCity"
-                        : "getMostRecentWindSpeedByCity";
-
-                const field = mode === "temperature" ? "temperature"
-                            : mode === "humidity"    ? "humidity"
-                            : "wind_speed";
+                const field =
+                    mode === "temperature"
+                        ? "temperature"
+                        : mode === "humidity"
+                        ? "humidity"
+                        : "wind_speed";
 
                 return {
                     city,
-                    value: data?.[key]?.[field] ?? "N/A"
+                    value:
+                        data?.getMostRecentWeatherByCity?.[field]
+                        ?? "N/A"
                 };
             })
         );
-
         setCitiesData(results);
 
     };

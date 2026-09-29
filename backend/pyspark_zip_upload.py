@@ -75,6 +75,7 @@ def fetch_weather(zip_state):
         return {
             "zip": zip_code,
             "state": state,
+            "city": data["location"]["name"],
             "temperature": data["current"]["temp_f"],
             "humidity": data["current"]["humidity"],
             "wind_speed": data["current"]["wind_mph"],
@@ -95,6 +96,7 @@ results_rdd = zips_rdd.map(fetch_weather).filter(lambda x: x is not None).cache(
 
 # convert to DataFrame and write to MongoDB
 df = results_rdd.toDF().cache()
+print("[pyspark_zip_upload.py] here's the DataFrame:")
 df.show(5)
 upload_count = df.count()
 

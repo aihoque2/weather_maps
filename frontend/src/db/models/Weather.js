@@ -22,10 +22,15 @@ const weatherZipSchema = new mongoose.Schema({
         required: true,
     },        // e.g. "63110"
     state: String,       // e.g. "Missouri"
+    lat: Number,
+    lon: Number,
     temperature: Number, // in whatever unit your data pipeline stores (F, C, K)
     humidity: Number,    // typically a percentage 0-100
     wind_speed: Number,  // e.g. mph or km/h
-    time: Date,          // timestamp of the reading - used for sorting to get "most recent"
+    time:{ 
+        type: Date,
+        required: true
+    }          // timestamp of the reading - used for sorting to get "most recent"
 }, 
 // By default mongoose would look for a collection named "weathers" (pluralized).
 // This overrides that and tells mongoose to use the collection literally named "weather".
