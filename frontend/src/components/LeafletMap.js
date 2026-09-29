@@ -55,7 +55,7 @@ export default function LeafletMap() {
     state: {
       color: "black",
       weight: 3,
-      fillColor: "red",
+      fillColor: "tan",
       fillOpacity: 0.5,
     },
 
