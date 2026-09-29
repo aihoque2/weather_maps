@@ -2,7 +2,7 @@ const auth = require("./auth.json")
 const {ApolloServer, gql} = require("apollo-server");
 const { mergeTypeDefs } = require("@graphql-tools/merge");
 const { mergeResolvers } = require("@graphql-tools/merge");
-const {WeatherCity} = require("./models/Weather.js"); // module.exports
+const {WeatherCity, WeatherZip} = require("./models/Weather.js"); // module.exports
 const mongoose = require("mongoose");
 
 /*
@@ -75,6 +75,23 @@ const WeatherTypeDef = gql`
         getAvgWindSpeedByState(state: String!): WindSpeedAvg
         getAvgTemperatureByState(state: String!): TemperatureAvg
 
+    }
+`
+
+/*
+this type is to get all the unique
+zip codes inserted to mongoDB
+
+*/
+const ZipCodeTypeDef = gql`
+    type ZipCodePoint{
+        zip: String!
+        state: String!
+        lat: Float!
+        lon: Float!
+    }
+    type Query{
+        getAllZipCodes: [ZipCodePoint!]!
     }
 `
 
@@ -182,13 +199,103 @@ const WeatherResolvers = {
         },    }
 }
 
+const ZipCodeResolvers = {
+    Query: {
+        getAllZipCodes: async () => {
+            try {
+                const result = await WeatherZip.aggregate([
+                    /*
+                    Remove documents that cannot be plotted.
+                    (null-valued docs suck)
+                    */
+                    {
+                        $match: {
+                            zip: { $ne: null },
+                            state: { $ne: null },
+                            lat: { $ne: null },
+                            lon: { $ne: null }
+                        }
+                    },
+
+                    /*
+                    Group records by ZIP, newest first.
+
+                    Example:
+
+                    15213  Sept 29 21:00
+                    15213  Sept 29 20:00
+                    15213  Sept 29 19:00
+
+                    15217  Sept 29 21:00
+                    15217  Sept 29 20:00
+                    */
+                    {
+                        $sort: {
+                            zip: 1,
+                            time: -1
+                        }
+                    },
+
+                    /*
+                    One group per unique ZIP.
+
+                    Because we sorted newest-first,
+                    $first gives us the newest usable record.
+                    */
+                    {
+                        $group: {
+                            _id: "$zip",
+
+                            zip: { $first: "$zip"},
+                            state: { $first: "$state" },
+                            lat: { $first: "$lat" },
+                            lon: { $first: "$lon" }
+                        }
+                    },
+
+                    /*
+                    Don't send Mongo's grouping _id
+                    to the frontend.
+                    */
+                    {
+                        $project: {
+                            _id: 0,
+                            zip: 1,
+                            state: 1,
+                            lat: 1,
+                            lon: 1
+                        }
+                    }
+                ]);
+
+                console.log(
+                    `Found ${result.length} unique ZIP codes`
+                );
+
+                return result;
+            }
+            catch (err) {
+                console.error(
+                    "Error fetching ZIP codes:",
+                    err
+                );
+
+                throw new Error(
+                    "Error fetching ZIP code data."
+                );
+            }
+        }
+    }
+};
 
 const typeDefs = mergeTypeDefs([
-    WeatherTypeDef                          
+    WeatherTypeDef,      
+    ZipCodeTypeDef                    
 ]);
 
 const resolvers = mergeResolvers([
-    WeatherResolvers
+    WeatherResolvers,
+    ZipCodeResolvers
 ]);
 
 

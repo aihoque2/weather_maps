@@ -10,11 +10,26 @@ Queries by city-state pair
 
 // Humidity 
 export const GET_HUMIDITY_BY_CITY_STATE = gql`
-  query GetMostRecentHumidity($city: String!, $state: String!) {
+  query GetMostRecentHumidityByCityState($city: String!, $state: String!) {
     getMostRecentWeatherByCity(city: $city, state: $state) {
       location {
             city
             state
+      }
+      humidity
+      time
+    }
+  }
+`;
+
+export const GET_HUMIDITY_BY_ZIP = gql`
+  query GetMostRecentHumidityByZip($zip: String!) {
+    getMostRecentWeatherByZip(zip: $zip) {
+      location {
+            state
+            zip
+            lat
+            lon
       }
       humidity
       time
@@ -33,11 +48,26 @@ export const GET_AVG_HUMIDITY_BY_STATE = gql`
 
 // Temperature
 export const GET_TEMPERATURE_BY_CITY_STATE = gql`
-  query GetMostRecentTemperature($city: String!, $state: String!) {
+  query GetMostRecentTemperatureByCityState($city: String!, $state: String!) {
     getMostRecentWeatherByCity(city: $city, state: $state) {
       location {
             city
             state
+      }
+      temperature
+      time
+    }
+  }
+`;
+
+export const GET_TEMPERATURE_BY_ZIP = gql`
+  query GetMostRecentTemperatureByZip($zip: String!) {
+    getMostRecentWeatherByZip(zip: $zip) {
+      location {
+            zip
+            state
+            lat
+            lon
       }
       temperature
       time
@@ -56,11 +86,27 @@ export const GET_AVG_TEMPERATURE_BY_STATE = gql`
 
 // Wind Speed
 export const GET_WIND_SPEED_BY_CITY_STATE = gql`
-  query GetMostRecentWindSpeed($city: String!, $state: String!) {
+  query GetMostRecentWindSpeedByCityState($city: String!, $state: String!) {
     getMostRecentWeatherByCity(city: $city, state: $state) {
       location {
             city
             state
+      }
+      wind_speed
+      time
+    }
+  }
+`;
+
+
+export const GET_WIND_SPEED_BY_ZIP = gql`
+  query GetMostRecentWindSpeedByZip($zip: String!) {
+    getMostRecentWeatherByZip(zip: $zip) {
+      location {
+            zip
+            state
+            lat
+            lon
       }
       wind_speed
       time
@@ -77,4 +123,15 @@ export const GET_AVG_WIND_SPEED_BY_STATE = gql`
   }
 `;
 
+// for LeafletMap.js
+export const GET_ALL_ZIP_CODES = gql`
+  query GetAllZipCodes {
+    getAllZipCodes {
+      zip
+      state
+      lat
+      lon
+    }
+  }
+`;
 

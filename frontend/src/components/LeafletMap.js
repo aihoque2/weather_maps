@@ -1,6 +1,9 @@
+import { useState, setState, useEffect } from "react";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import statesData from "../extras/us-states-polygons.js";
+import { throwServerError, useApolloClient, useQuery } from "@apollo/client";
 import "leaflet/dist/leaflet.css";
+import {GET_ALL_ZIP_CODES} from "../db/queries.js";
 
 function onEachState(feature, layer) {
   layer.bindTooltip(feature.properties.name);
@@ -10,7 +13,31 @@ function onClick(feature){
   console.log("you just clicked" + feature.properties.name);
 }
 
-export default function LeafletMap() {
+export default function LeafletMap(props) {
+  /* 
+  get all the zips uploaded
+  to the collection `weather_zip`
+  */
+ const mode = props.mode
+  const { loading, error, data } =
+    useQuery(GET_ALL_ZIP_CODES);
+
+  const zip_codes = data?.getAllZipCodes ?? [];
+
+  console.log("loading:", loading);
+  console.log("zip_codes length:", zip_codes.length);
+
+  if (error) {
+    return (
+      <div style={styles.wrapper}>
+        Error loading ZIP codes: {error.message}
+      </div>
+    );
+  }
+
+
+
+
   return (
     <div style={styles.wrapper}>
       <MapContainer
