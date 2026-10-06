@@ -30,7 +30,7 @@ async function testQuery() {
     console.log("here's the collections: ");
     console.log(listOfCollections);
 
-    let documents = await mongoose.connection.db.collection("weather").find({state: "Missouri"}).toArray();
+    let documents = await mongoose.connection.db.collection("weather_zip").find({state: "Missouri"}).toArray();
     console.log("here's some documents: ");
     console.log(documents);
 

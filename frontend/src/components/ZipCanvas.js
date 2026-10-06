@@ -4,7 +4,7 @@ import { useMap } from "react-leaflet";
 /*
 ZipCanvas.js
 */
-export function ZipCanvas({ zipCodes }) {
+export function ZipCanvas({ zipCodes, mode }) { // TODO: Mode
   const map = useMap();
   const canvasRef = useRef(null);
 
@@ -15,8 +15,22 @@ export function ZipCanvas({ zipCodes }) {
     const draw = () => {
       const size = map.getSize();
 
+      const topLeft = map.containerPointToLayerPoint([0,0]);
+
       canvas.width = size.x;
       canvas.height = size.y;
+      
+      /*
+      Since this canvas is inside a Leaflet Pane,
+      position the canvas itself using Leaflet's
+      layer-coordinate system.
+      */
+      
+      canvas.style.left = `${topLeft.x}px`;
+      canvas.style.top = `${topLeft.y}px`;
+
+      canvas.style.width = `${size.x}px`;
+      canvas.style.height = `${size.y}px`;
 
       const ctx = canvas.getContext("2d");
 
@@ -37,21 +51,29 @@ export function ZipCanvas({ zipCodes }) {
           continue;
         }
 
-        const point =
-          map.latLngToContainerPoint([
+        /*
+        Convert this geographic location into
+        Leaflet LAYER coordinates.
+        */
+
+        const layerPoint =
+          map.latLngToLayerPoint([
             zip.lat,
             zip.lon
           ]);
+
+        const x = layerPoint.x - topLeft.x;
+        const y = layerPoint.y - topLeft.y;
 
         /*
         Don't bother drawing points
         outside the current viewport.
         */
         if (
-          point.x < 0 ||
-          point.y < 0 ||
-          point.x > size.x ||
-          point.y > size.y
+          x < 0 ||
+          y < 0 ||
+          x > size.x ||
+          y > size.y
         ) {
           continue;
         }
@@ -59,8 +81,8 @@ export function ZipCanvas({ zipCodes }) {
         ctx.beginPath();
 
         ctx.arc(
-          point.x,
-          point.y,
+          x,
+          y,
           2,              // blot radius
           0,
           Math.PI * 2
@@ -93,10 +115,7 @@ export function ZipCanvas({ zipCodes }) {
       ref={canvasRef}
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
         pointerEvents: "none",
-        zIndex: 350
       }}
     />
   );
