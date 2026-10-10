@@ -1,6 +1,6 @@
 # weather_viz
 
-##### visualizing weather data by states on a spectrum
+##### visualizing weather data by states on a spectrum. API: https://www.weatherapi.com/
 
 ##### We present Humidity, Wind Speed, and Temperature
 
