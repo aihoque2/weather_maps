@@ -5,6 +5,7 @@ import {useApolloClient, useQuery} from "@apollo/client";
 
 import statesData from "../extras/us-states-polygons.js";
 import cities_data from "../extras/Cities.js";
+import Legend from "./Legend.js";
 
 import USStateToolTip from "./USStateToolTip.js";
 
@@ -215,12 +216,12 @@ export default function LeafletMap({ mode }) {
         </MapContainer>
       </div>
 
-      {/* <Legend
+      { <Legend
         mode={mode}
         min={minVal}
         max={maxVal}
         interpolateColor={interpolateColor}
-      /> */}
+      /> }
     </div>
   );
 }
