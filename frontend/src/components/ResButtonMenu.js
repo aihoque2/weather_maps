@@ -23,7 +23,7 @@ export default function ResButtonMenu(props) {
                                 ? "#33d4da" // Selected background color (cyan blue)
                                 : "#e6d0c6f3", // Unselected background color (light tan)
                         color:
-                            props.mode === option.value ? "#070606" : "#7f8c8d", // Selected/unselected font color
+                            props.resolution === option.value ? "#070606" : "#7f8c8d", // Selected/unselected font color
                         transition: "all 0.3s ease",
                     }}
                 >
@@ -40,24 +40,19 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         gap: "10px",
-        width: "100%",
-        height: "50px",
-        marginBottom: "10px",
-        backgroundColor: "#8cd8e2",
-        padding: "5px 0",
     },
     option: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         width: "100px",
-        height: "50%",
+        height: "30px",
         borderRadius: "8px",
         cursor: "pointer",
         fontSize: "14px",
         fontWeight: "bold",
         textAlign: "center",
-        border: "1px solid #bdc3c7", // Light gray border
+        border: "1px solid #bdc3c7",
         fontFamily: "inherit",
     },
 };

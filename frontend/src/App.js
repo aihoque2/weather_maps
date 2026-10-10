@@ -76,42 +76,61 @@ function App() {
   }
   else{
     if (resolution == "zip"){
-      graphic = (<>
-      <ResButtonMenu setResolution={setResolution} resolution={resolution}/>
-      <LeafletMap></LeafletMap>
-      </>
-    )
+      graphic = (
+      <LeafletMap mode={mode} ></LeafletMap>
+      )
+
     }
     
-    else graphic = (<>
-      <ResButtonMenu setResolution={setResolution} resolution={resolution}/>
-      <CityColorMap mode={mode} onClick={mapHandler}/>;
-    </>
+    else graphic = (
+      <CityColorMap mode={mode} onClick={mapHandler}/>
     )
 
 
   }
 
-  return (
-    <div className="App">
-      <h1>
-        <ButtonMenu setMode={navigateMode} mode={mode}></ButtonMenu>
-      </h1>
+  const isWeatherMode = mode === "temperature" ||
+                        mode === "wind_speed" ||
+                        mode === "humidity"; 
 
-        <main style={{ width: "70%" }}>
-          {graphic}
-        </main>
+return (
+  <div className="App">
+    <h1>
+      <ButtonMenu
+        setMode={navigateMode}
+        mode={mode}
+      />
+    </h1>
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Git Gud
-        </a>
-    </div>
-  );
+    <main className="main">
+
+      {/* Always occupies the same row for weather modes */}
+      {isWeatherMode && (
+        <div className="resrow">
+          <ResButtonMenu
+            resolution={resolution}
+            setResolution={setResolution}
+          />
+        </div>
+      )}
+
+      {/* Visualization goes underneath */}
+      <div className="graphic">
+        {graphic}
+      </div>
+
+    </main>
+
+    <a
+      className="App-link"
+      href="https://reactjs.org"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Git Gud
+    </a>
+  </div>
+);
 }
 
 export default App;
