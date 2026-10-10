@@ -4,7 +4,7 @@ import { useMap } from "react-leaflet";
 /*
 ZipCanvas.js
 */
-export function ZipCanvas({ zipCodes, mode }) { // TODO: Mode
+export function ZipCanvas({ zipCodes, mode}) { // TODO: Mode
   const map = useMap();
   const canvasRef = useRef(null);
 
@@ -41,7 +41,6 @@ export function ZipCanvas({ zipCodes, mode }) { // TODO: Mode
         canvas.height
       );
 
-      ctx.fillStyle = "red";
 
       for (const zip of zipCodes) {
         if (
@@ -77,6 +76,8 @@ export function ZipCanvas({ zipCodes, mode }) { // TODO: Mode
         ) {
           continue;
         }
+        
+         ctx.fillStyle = zip.color ?? "#9f18dd";
 
         ctx.beginPath();
 
