@@ -124,13 +124,16 @@ export const GET_AVG_WIND_SPEED_BY_STATE = gql`
 `;
 
 // for LeafletMap.js
-export const GET_ALL_ZIP_CODES = gql`
-  query GetAllZipCodes {
-    getAllZipCodes {
+export const GET_ALL_ZIP_WEATHER = gql`
+  query GetAllZipWeather {
+    getAllZipWeather {
       zip
       state
       lat
       lon
+      temperature
+      humidity
+      wind_speed
     }
   }
 `;

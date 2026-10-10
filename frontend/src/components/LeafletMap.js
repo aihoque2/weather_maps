@@ -11,7 +11,7 @@ import USStateToolTip from "./USStateToolTip.js";
 import { ZipCanvas } from "./ZipCanvas.js";
 
 import {
-  GET_ALL_ZIP_CODES,
+  GET_ALL_ZIP_WEATHER,
   GET_AVG_HUMIDITY_BY_STATE,
   GET_AVG_TEMPERATURE_BY_STATE,
   GET_AVG_WIND_SPEED_BY_STATE,
@@ -49,84 +49,178 @@ function getQueryConfig(info, zip_codes, mode){
       resolverName: "getWindSpeedByZip", 
       fieldName: "wind_speed" 
   };
-
-
 }
 
-export default function LeafletMap(props) {
-  /* 
-  get all the zips uploaded
-  to the collection `weather_zip`
-  */
+const getFullName = (mode) => {
+  if (mode === "humidity") return "Humidity";
+  if (mode === "wind_speed") return "Wind Speed";
+  if (mode === "temperature") return "Temperature";
+  return "";
+};
 
-  // useStates()
-  const [toolTipOpened, SetToolTipOpened] = useState(true);
+const interpolateColor = (
+  ratio,
+  r1, g1, b1,
+  r2, g2, b2
+) => {
+  const r = Math.round(r1 + ratio * (r2 - r1));
+  const g = Math.round(g1 + ratio * (g2 - g1));
+  const b = Math.round(b1 + ratio * (b2 - b1));
 
-  const mode = props.mode;
-  const { loading, error, data } = useQuery(GET_ALL_ZIP_CODES);
+  const toHex = (val) =>
+    val.toString(16).padStart(2, "0");
 
-  const zip_codes = data?.getAllZipCodes ?? [];
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
 
-  console.log("loading:", loading);
-  console.log("zip_codes length:", zip_codes.length);
+const calculateFill = (mode, value, min, max) => {
+  const ratio =
+    max === min
+      ? 0.5
+      : Math.min(
+          Math.max((value - min) / (max - min), 0),
+          1
+        );
+
+  if (mode === "temperature") {
+    return interpolateColor(
+      ratio,
+      0, 0, 255,
+      255, 0, 0
+    );
+  }
+
+  if (mode === "humidity") {
+    return interpolateColor(
+      ratio,
+      218, 165, 32,
+      0, 200, 83
+    );
+  }
+
+  if (mode === "wind_speed") {
+    return interpolateColor(
+      ratio,
+      255, 140, 0,
+      97, 23, 209
+    );
+  }
+
+  return "#9f18dd";
+};
+
+export default function LeafletMap({ mode }) {
+  const {
+    loading,
+    error,
+    data
+  } = useQuery(GET_ALL_ZIP_WEATHER);
+
+  const zipWeather =
+    data?.getAllZipWeather ?? [];
+
+  const fieldName =
+    mode === "temperature"
+      ? "temperature"
+      : mode === "humidity"
+      ? "humidity"
+      : "wind_speed";
+
+  const values = zipWeather
+    .map(point => point[fieldName])
+    .filter(value => typeof value === "number");
+
+  const minVal =
+    values.length > 0
+      ? Math.min(...values)
+      : 0;
+
+  const maxVal =
+    values.length > 0
+      ? Math.max(...values)
+      : 0;
+
+  const coloredZipWeather =
+    zipWeather.map(point => ({
+      ...point,
+
+      value: point[fieldName],
+
+      color: calculateFill(
+        mode,
+        point[fieldName],
+        minVal,
+        maxVal
+      )
+    }));
 
   if (error) {
     return (
       <div style={styles.wrapper}>
-        Error loading ZIP codes: {error.message}
+        Error loading ZIP weather:
+        {error.message}
       </div>
     );
   }
 
-
   return (
-    <div style={styles.wrapper}>
-      <MapContainer
-        center={[39.8, -98.6]}
-        zoom={4}
-        style={styles.map}
-      >
-        {/* actual geographic map */}
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <div>
+      <h1 style={{ textAlign: "center" }}>
+        {getFullName(mode)}
+      </h1>
 
-        {/* TAN STATE BACKGROUND */}
-        <Pane
-          name="stateFillPane"
-          style={{ zIndex: 300 }}
+      <div style={styles.wrapper}>
+        <MapContainer
+          center={[39.8, -98.6]}
+          zoom={4}
+          style={styles.map}
         >
-          <GeoJSON
-            data={statesData}
-            style={styles.stateFill}
-            interactive={false}
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        </Pane>
 
-        {/* ZIP DOTS */}
-        <Pane
-          name="zipPane"
-          style={{ zIndex: 350 }}
-        >
-          {!loading && (
-            <ZipCanvas zipCodes={zip_codes} />
-          )}
-        </Pane>
+          <Pane
+            name="stateFillPane"
+            style={{ zIndex: 300 }}
+          >
+            <GeoJSON
+              data={statesData}
+              style={styles.stateFill}
+              interactive={false}
+            />
+          </Pane>
 
-        {/* BLACK STATE BORDERS + CLICK EVENTS */}
-        <Pane
-          name="stateBorderPane"
-          style={{ zIndex: 450 }}
-        >
-          <GeoJSON
-            data={statesData}
-            style={styles.stateBorder}
-            onEachFeature={onEachState}
-          />
-        </Pane>
-      
-      </MapContainer>
+          <Pane
+            name="zipPane"
+            style={{ zIndex: 350 }}
+          >
+            {!loading && (
+              <ZipCanvas
+                zipCodes={coloredZipWeather}
+              />
+            )}
+          </Pane>
+
+          <Pane
+            name="stateBorderPane"
+            style={{ zIndex: 450 }}
+          >
+            <GeoJSON
+              data={statesData}
+              style={styles.stateBorder}
+              onEachFeature={onEachState}
+            />
+          </Pane>
+        </MapContainer>
+      </div>
+
+      {/* <Legend
+        mode={mode}
+        min={minVal}
+        max={maxVal}
+        interpolateColor={interpolateColor}
+      /> */}
     </div>
   );
 }

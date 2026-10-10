@@ -84,14 +84,21 @@ zip codes inserted to mongoDB
 
 */
 const ZipCodeTypeDef = gql`
-    type ZipCodePoint{
+    type ZipWeatherPoint {
         zip: String!
         state: String!
+        city: String
         lat: Float!
         lon: Float!
+
+        temperature: Float!
+        humidity: Float!
+        wind_speed: Float!
+        time: String!
     }
-    type Query{
-        getAllZipCodes: [ZipCodePoint!]!
+
+    type Query {
+        getAllZipWeather: [ZipWeatherPoint!]!
     }
 `
 
@@ -201,7 +208,7 @@ const WeatherResolvers = {
 
 const ZipCodeResolvers = {
     Query: {
-        getAllZipCodes: async () => {
+        getAllZipWeather: async () => {
             try {
                 const result = await WeatherZip.aggregate([
                     /*
@@ -213,7 +220,10 @@ const ZipCodeResolvers = {
                             zip: { $ne: null },
                             state: { $ne: null },
                             lat: { $ne: null },
-                            lon: { $ne: null }
+                            lon: { $ne: null },
+                            temperature: { $ne: null },
+                            humidity: { $ne: null },
+                            wind_speed: { $ne: null }
                         }
                     },
 
@@ -249,7 +259,11 @@ const ZipCodeResolvers = {
                             zip: { $first: "$zip"},
                             state: { $first: "$state" },
                             lat: { $first: "$lat" },
-                            lon: { $first: "$lon" }
+                            lon: { $first: "$lon" },
+                            temperature: { $first: "$temperature" },
+                            humidity: { $first: "$humidity" },
+                            wind_speed: { $first: "$wind_speed" },
+                            time: { $first: "$time" }
                         }
                     },
 
@@ -263,7 +277,11 @@ const ZipCodeResolvers = {
                             zip: 1,
                             state: 1,
                             lat: 1,
-                            lon: 1
+                            lon: 1,
+                            temperature: 1,
+                            humidity: 1,
+                            wind_speed: 1,
+                            time: 1
                         }
                     }
                 ]);
