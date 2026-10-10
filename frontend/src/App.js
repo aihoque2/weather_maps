@@ -1,6 +1,7 @@
 import logo from './weather_maps_logo.png';
 import './App.css';
 import ButtonMenu from './components/ButtonMenu';
+import ResButtonMenu from './components/ResButtonMenu';
 import CityColorMap from './components/CityColorMap';
 import TestHumidity from './components/TestComponent';
 import { useEffect, useState } from 'react';
@@ -25,11 +26,13 @@ const HASH_TO_MODE = {
   '#/leaflet': 'leaflet',
 };
 
+
 const getModeFromHash = () => HASH_TO_MODE[window.location.hash] || 'start';
 
 function App() {
   // Starter, temperature, wind_speed, humidity, test
   const [mode, setMode] = useState(getModeFromHash());
+  const [resolution, setResolution] = useState("state") // choose between [state, zip]
 
   useEffect(() => {
     if (!window.location.hash) {
@@ -68,10 +71,24 @@ function App() {
     graphic = <TestHumidity></TestHumidity>
   } 
   else if (mode == "leaflet"){
+    <div></div>
     graphic = <LeafletMap></LeafletMap>
   }
   else{
-    graphic = <CityColorMap mode={mode} onClick={mapHandler}/>;
+    if (resolution == "zip"){
+      graphic = (<>
+      <ResButtonMenu setResolution={setResolution} resolution={resolution}/>
+      <LeafletMap></LeafletMap>
+      </>
+    )
+    }
+    
+    else graphic = (<>
+      <ResButtonMenu setResolution={setResolution} resolution={resolution}/>
+      <CityColorMap mode={mode} onClick={mapHandler}/>;
+    </>
+    )
+
 
   }
 
