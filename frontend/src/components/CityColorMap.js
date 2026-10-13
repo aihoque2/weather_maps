@@ -51,7 +51,6 @@ const CityColorMap = (props) => {
     let full_name = get_full_name(mode)
 
     const [statesCustomConfig, setStatesCustomConfig] = useState({});
-    const [toolTipOpened, SetToolTipOpened] = useState(true);
     const [selectedUSState, setSelectedUSState] = useState(null);
     const [citiesData, setCitiesData] = useState(null);
     const [clickLoc, setClickLoc] = useState({}); // state location: x and y

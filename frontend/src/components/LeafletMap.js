@@ -1,9 +1,10 @@
-import { useState, setState } from "react";
+import { useState, useRef } from "react";
 import { MapContainer, TileLayer, GeoJSON, Pane} from "react-leaflet";
 
 import {useApolloClient, useQuery} from "@apollo/client";
 
 import statesData from "../extras/us-states-polygons.js";
+import us_state_to_name from "../extras/StateToName.js"
 import cities_data from "../extras/Cities.js";
 import Legend from "./Legend.js";
 
@@ -26,31 +27,37 @@ import {
 
 import "leaflet/dist/leaflet.css";
 
-function onEachState(feature, layer) {
-  layer.bindTooltip(feature.properties.name);
-}
+const getStateQueryConfig = (mode) => {
+  if (mode === "temperature") {
+    return {
+      cityQuery: GET_TEMPERATURE_BY_CITY_STATE,
+      avgQuery: GET_AVG_TEMPERATURE_BY_STATE,
+      avgResolverName: "getAvgTemperatureByState",
+      fieldName: "temperature",
+    };
+  }
 
-function onClick(feature){
-  console.log("you just clicked" + feature.properties.name);
-}
+  if (mode === "humidity") {
+    return {
+      cityQuery: GET_HUMIDITY_BY_CITY_STATE,
+      avgQuery: GET_AVG_HUMIDITY_BY_STATE,
+      avgResolverName: "getAvgHumidityByState",
+      fieldName: "humidity",
+    };
+  }
 
-function getQueryConfig(info, zip_codes, mode){
-  if (mode === "temperature") return { 
-      query: GET_TEMPERATURE_BY_ZIP, 
-      resolverName: "getTemperatureByZip", 
-      fieldName: "temperature" 
-  };
-  if (mode === "humidity") return { 
-      query: GET_HUMIDITY_BY_ZIP, 
-      resolverName: "getHumidityByZip", 
-      fieldName: "humidity" 
-  };
-  if (mode === "wind_speed") return { 
-      query: GET_WIND_SPEED_BY_ZIP, 
-      resolverName: "getWindSpeedByZip", 
-      fieldName: "wind_speed" 
-  };
-}
+  if (mode === "wind_speed") {
+    return {
+      cityQuery: GET_WIND_SPEED_BY_CITY_STATE,
+      avgQuery: GET_AVG_WIND_SPEED_BY_STATE,
+      avgResolverName: "getAvgWindSpeedByState",
+      fieldName: "wind_speed",
+    };
+  }
+
+  return null;
+};
+
 
 const getFullName = (mode) => {
   if (mode === "humidity") return "Humidity";
@@ -116,6 +123,154 @@ export default function LeafletMap({ mode }) {
     error,
     data
   } = useQuery(GET_ALL_ZIP_WEATHER);
+
+  const [selectedUSState, setSelectedUSState] = useState(null);
+  const [stateAverage, setStateAverage] = useState(null);
+  const [citiesData, setCitiesData] = useState(null);
+
+  const selectedUSStateRef = useRef(null);
+
+
+
+  const client = useApolloClient();
+
+ const handleStateClick = async (feature, event) => {
+  const stateName = feature.properties.name;
+
+  console.log("You clicked state:", stateName);
+
+  /*
+   Leaflet's event wraps the original browser MouseEvent.
+   Since USStateToolTip uses position: fixed,
+   clientX/clientY are exactly what we want.
+  */
+  const mouseEvent = event.originalEvent;
+
+  // Clicking the same state again closes it
+  if (
+    selectedUSStateRef.current &&
+    selectedUSStateRef.current.name === stateName
+  ) {
+    selectedUSStateRef.current = null;
+    setSelectedUSState(null);
+    setCitiesData(null);
+    setStateAverage(null);
+    return;
+  }
+
+  const newSelectedState ={
+    name: stateName,
+    x: mouseEvent.clientX,
+    y: mouseEvent.clientY,
+  };
+
+  // Keep React state and ref synchronized
+  selectedUSStateRef.current = newSelectedState;
+  setSelectedUSState(newSelectedState);
+
+  // show Loading... while queries run
+  setCitiesData(null);
+  setStateAverage(null);
+
+  const config = getStateQueryConfig(mode);
+
+  if (!config) {
+    return;
+  }
+
+  const {
+    cityQuery,
+    avgQuery,
+    avgResolverName,
+    fieldName,
+  } = config;
+
+  /*
+   Leaflet GeoJSON already gives us the full state name:
+   "Missouri", "California", etc.
+
+   Therefore we don't need StateToName.js here.
+  */
+  const stateCities =
+    cities_data[stateName] ?? [];
+
+  try {
+    /*
+     Fetch:
+       1. the state's average
+       2. the 3-4 city observations
+
+     at the same time.
+    */
+    const [avgResult, cityResults] =
+      await Promise.all([
+        client.query({
+          query: avgQuery,
+          variables: {
+            state: stateName,
+          },
+        }),
+
+        Promise.all(
+          stateCities.map(async (city) => {
+            const { data } =
+              await client.query({
+                query: cityQuery,
+                variables: {
+                  city,
+                  state: stateName,
+                },
+              });
+
+            return {
+              city,
+              value:
+                data
+                  ?.getMostRecentWeatherByCity
+                  ?.[fieldName] ?? "N/A",
+            };
+          })
+        ),
+      ]);
+
+    const average =
+      avgResult.data
+        ?.[avgResolverName]
+        ?.[fieldName];
+
+    console.log(
+      `${stateName} average ${fieldName}:`,
+      average
+    );
+
+    console.log(
+      `${stateName} cities:`,
+      cityResults
+    );
+
+    setStateAverage(
+      typeof average === "number"
+        ? average
+        : null
+    );
+
+    setCitiesData(cityResults);
+  }
+  catch (err) {
+    console.error(
+      `Error loading weather for ${stateName}:`,
+      err
+    );
+
+    setCitiesData([]);
+    setStateAverage(null);
+  }
+};
+
+  function onEachState(feature, layer) {
+    layer.bindTooltip(feature.properties.name);
+    layer.on("click", (event) => { handleStateClick(feature, event)});
+  }
 
   const zipWeather =
     data?.getAllZipWeather ?? [];
@@ -222,6 +377,17 @@ export default function LeafletMap({ mode }) {
         max={maxVal}
         interpolateColor={interpolateColor}
       /> }
+
+      {selectedUSState && (
+          <USStateToolTip 
+              us_state={selectedUSState.name}
+              mode={mode}
+              city_vals={citiesData}
+              state_val = {stateAverage}
+              loc={{ x: selectedUSState.x, y: selectedUSState.y }}
+              onClose={() => {setSelectedUSState(null); setCitiesData(null); setStateAverage(null);}}
+          />
+      )}
     </div>
   );
 }
