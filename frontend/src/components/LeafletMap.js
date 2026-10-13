@@ -385,7 +385,12 @@ export default function LeafletMap({ mode }) {
               city_vals={citiesData}
               state_val = {stateAverage}
               loc={{ x: selectedUSState.x, y: selectedUSState.y }}
-              onClose={() => {setSelectedUSState(null); setCitiesData(null); setStateAverage(null);}}
+              onClose={() => {
+                setSelectedUSState(null); 
+                setCitiesData(null); 
+                setStateAverage(null);
+                selectedUSStateRef.current = null;
+              }}
           />
       )}
     </div>
