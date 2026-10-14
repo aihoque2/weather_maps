@@ -4,7 +4,7 @@
 
 ##### We present Humidity, Wind Speed, and Temperature
 
-![map of temperature visualization](images/usa_map_screenshot.png)
+![map of temperature visualization using state averages](images/leaflet_state_temperature.png)
 
 ##### Visualization by zip code:
 
