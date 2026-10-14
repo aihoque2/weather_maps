@@ -17,5 +17,6 @@
 ![map of windspeed visualization with tooltip](images/tooltip_screenshot.png)
 
 
+## How to run
 
-**WIP :)**
+please establish a mongoDB database
