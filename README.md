@@ -14,7 +14,7 @@
 
 ##### Click on states on the map to view quantitative data
 
-![map of windspeed visualization with tooltip](images/tooltip_screenshott.png)
+![map of windspeed visualization with tooltip](images/tooltip_screenshot.png)
 
 
 ## How to run
