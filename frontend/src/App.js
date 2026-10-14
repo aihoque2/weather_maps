@@ -2,7 +2,6 @@ import logo from './weather_maps_logo.png';
 import './App.css';
 import ButtonMenu from './components/ButtonMenu';
 import ResButtonMenu from './components/ResButtonMenu';
-import CityColorMap from './components/CityColorMap';
 import TestHumidity from './components/TestComponent';
 import { useEffect, useState } from 'react';
 
@@ -74,11 +73,9 @@ function App() {
     graphic = <LeafletMap></LeafletMap>
   }
   else {
-    if (resolution == "zip"){
-      graphic = (
-      <LeafletMap mode={mode} res={resolution} ></LeafletMap>
-      )
-    }
+    graphic = (
+    <LeafletMap mode={mode} res={resolution} ></LeafletMap>
+    )
   }
 
   const isWeatherMode = mode === "temperature" ||

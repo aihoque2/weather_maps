@@ -1,3 +1,11 @@
+/*
+LeafletMap.js
+
+this is where we take in resolution 
+"State" or "Zip" and then color the 
+map accordingly
+*/
+
 import {
   useState,
   useRef,
@@ -131,6 +139,9 @@ const calculateFill = (
 
 export default function LeafletMap({ mode, res}) {
   const client = useApolloClient();
+
+  const resolution = (res ?? "").toLowerCase();
+  console.log("resolution:", resolution);
 
   /*
    * ZIP data is large, so only fetch it while
@@ -288,7 +299,7 @@ export default function LeafletMap({ mode, res}) {
    *   California: 75
    * }
    *
-   * This matters because GeoJSON uses full
+   * Since GeoJSON uses full
    * state names.
    */
   const stateAverages = useMemo(() => {
@@ -321,12 +332,10 @@ export default function LeafletMap({ mode, res}) {
    * Make the latest object available to
    * Leaflet click handlers.
    */
-  stateAveragesRef.current =
-    stateAverages;
+  stateAveragesRef.current = stateAverages;
 
 
-  const stateValues =
-    Object.values(stateAverages);
+  const stateValues = Object.values(stateAverages);
 
 
   const stateMinVal =
@@ -422,10 +431,13 @@ export default function LeafletMap({ mode, res}) {
 
 
       /*
-       * State average already came from
+       * Use SetStateAverage() to set
+       * selected US state's average   
+       * 
+       * All US state averages already came from
        * GET_ALL_STATE_WEATHER_AVERAGES.
        *
-       * No need for another GraphQL request.
+       * We just pick the right ones
        */
       const average =
         stateAveragesRef.current[
