@@ -124,6 +124,17 @@ export const GET_AVG_WIND_SPEED_BY_STATE = gql`
 `;
 
 // for LeafletMap.js
+export const GET_ALL_STATE_WEATHER_AVERAGES = gql`
+  query GetAllStateWeatherAverages{
+    getAllStateWeatherAverages{
+    state
+    temperature
+    humidity
+    wind_speed
+    }
+  }
+`;
+
 export const GET_ALL_ZIP_WEATHER = gql`
   query GetAllZipWeather {
     getAllZipWeather {

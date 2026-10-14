@@ -11,7 +11,6 @@ https://codedamn.com/news/databases/mongodb-graphql
 */
 
 
-
 const username = auth["mongodb_user"];
 const password = auth["mongodb_password"]
 const db_name = auth["db_name"];
@@ -67,6 +66,13 @@ const WeatherTypeDef = gql`
         state: String!
         temperature: Float
     }
+
+    type StateWeatherAvg{
+        state: String!
+        temperature: Float
+        humidity: Float
+        wind_speed: Float!
+    }
     
     type Query{
         getMostRecentWeatherByCity(city: String!, state: String!): WeatherObservation
@@ -74,6 +80,7 @@ const WeatherTypeDef = gql`
         getAvgHumidityByState(state: String!): HumidityAvg
         getAvgWindSpeedByState(state: String!): WindSpeedAvg
         getAvgTemperatureByState(state: String!): TemperatureAvg
+        getAllStateWeatherAverages: [StateWeatherAvg!]!
 
     }
 `
@@ -203,7 +210,71 @@ const WeatherResolvers = {
                 console.error("Error fetching avg temperature:", err);
                 throw new Error("Error fetching avg temperature data.");
             }
-        },    }
+        },
+        getAllStateWeatherAverages: async () => {
+            return await WeatherZip.aggregate([
+                // newest observation first
+                {
+                    $sort: {
+                        zip: 1,
+                        time: -1
+                    }
+                },
+
+                // one latest observation per ZIP
+                {
+                    $group: {
+                        _id: "$zip",
+
+                        state: { $first: "$state" },
+
+                        temperature: {
+                            $first: "$temperature"
+                        },
+
+                        humidity: {
+                            $first: "$humidity"
+                        },
+
+                        wind_speed: {
+                            $first: "$wind_speed"
+                        }
+                    }
+                },
+
+                // now average ZIPs within each state
+                {
+                    $group: {
+                        _id: "$state",
+
+                        temperature: {
+                            $avg: "$temperature"
+                        },
+
+                        humidity: {
+                            $avg: "$humidity"
+                        },
+
+                        wind_speed: {
+                            $avg: "$wind_speed"
+                        }
+                    }
+                },
+
+                {
+                    $project: {
+                        _id: 0,
+                        state: "$_id",
+                        temperature: 1,
+                        humidity: 1,
+                        wind_speed: 1
+                    }
+                }
+            ]);
+        } 
+    }
+
+
 }
 
 const ZipCodeResolvers = {

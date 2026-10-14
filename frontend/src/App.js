@@ -71,22 +71,14 @@ function App() {
     graphic = <TestHumidity></TestHumidity>
   } 
   else if (mode == "leaflet"){
-    <div></div>
     graphic = <LeafletMap></LeafletMap>
   }
-  else{
+  else {
     if (resolution == "zip"){
       graphic = (
-      <LeafletMap mode={mode} ></LeafletMap>
+      <LeafletMap mode={mode} res={resolution} ></LeafletMap>
       )
-
     }
-    
-    else graphic = (
-      <CityColorMap mode={mode} onClick={mapHandler}/>
-    )
-
-
   }
 
   const isWeatherMode = mode === "temperature" ||
